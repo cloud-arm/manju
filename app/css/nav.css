@@ -1,0 +1,59 @@
+
+.nav {
+    overflow: hidden;
+    position: fixed;
+    bottom: 16px;
+    left: 1%;
+    right: 1%;
+    width: 98%;
+    display: flex;
+    overflow-x: auto;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(100deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5));
+    z-index: 101;
+   
+    
+    border-radius: 30px;
+}
+
+.nav-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    
+}
+
+.nav-text {
+    font-size: 16px;
+    margin: auto;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.menu-icon {
+    display: inline;
+    font-size: 20px;
+    transition: color .3s;
+}
+.nav-item.active {
+    flex-grow: 3;
+    border-radius: 30px;
+    background: #0d0d0d;
+    justify-content: flex-start;
+
+}
+
+.nav-item.active > .nav-text {
+    display: inline-block;
+}
+
+.nav-item.active {
+    color: #6e5fc3;
+}
+
