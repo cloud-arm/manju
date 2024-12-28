@@ -84,40 +84,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <div class="input-group">
-                                                <div class="input-group-addon">
-                                                    <label>Unit</label>
-                                                </div>
-                                                <select class="form-control select2" name="unit" id="unit"
-                                                    style="width: 100%;" tabindex="1" autofocus>
-                                                    <!-- Options will be populated dynamically by JavaScript -->
-                                                    <option value="0">Default</option>
-
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
                                             <div class="input-group date">
                                                 <div class="input-group-addon">
                                                     <label>Qty</label>
                                                 </div>
                                                 <input type="number" class="form-control" value="1" name="qty"
                                                     tabindex="2">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <div class="input-group date">
-                                                <div class="input-group-addon">
-                                                    <label>Cost Price</label>
-                                                </div>
-                                                <input type="number" class="form-control" name="sell" id="sell"
-                                                    step=".01" tabindex="2" required>
                                             </div>
                                         </div>
                                     </div>
@@ -139,9 +111,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             <table id="example2" class="table table-bordered table-hover" style="border-radius: 0;">
                                 <tr>
                                     <th>Product Name</th>
-                                    <th>Unit</th>
                                     <th>QTY</th>
-                                    <th>Cost (Rs.)</th>
                                     <th>Amount (Rs.)</th>
                                     <th>#</th>
                                 </tr>
@@ -162,9 +132,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 ?>
                                 <tr <?php echo $style; ?> class="record">
                                     <td><?php echo $row['name']; ?></td>
-                                    <td><?php echo $row['unit']; ?></td>
                                     <td><?php echo $row['qty']; ?></td>
-                                    <td><?php echo $row['sell']; ?></td>
                                     <td><?php echo $row['amount']; ?></td>
                                     <td> <a href="#" id="<?php echo $row['id']; ?>" class="dll_btn btn btn-danger"
                                             title="Click to Delete"> X</a></td>
@@ -192,37 +160,15 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             <div class="box-body d-block">
                                 <form method="POST" action="grn_save.php">
                                     <div class="row">
+
                                         <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Supplier</label>
-                                                <select class="form-control select2" name="supply" style="width: 100%;"
-                                                    tabindex="1" autofocus>
-                                                    <?php
-                                                    $result = select_query("SELECT * FROM supplier ");
-                                                    for ($i = 0; $row = $result->fetch(); $i++) { ?>
-                                                    <option value="<?php echo $row['id']; ?>">
-                                                        <?php echo $row['name']; ?></option>
-                                                    <?php    } ?>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label>PO Number(optional)</label>
-                                                <input class="form-control" type="text" name="sup_invoice"
-                                                    autocomplete="off">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>Note</label>
                                                 <input class="form-control" type="text" name="note" autocomplete="off">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2" style="height: 75px;display: flex; align-items: end;">
+                                        <div class="col-md-4" style="height: 75px;display: flex; align-items: end;">
                                             <div class="form-group">
                                                 <input type="hidden" name="id" value="<?php echo $invo; ?>">
                                                 <input type="hidden" name="type" value="Order">

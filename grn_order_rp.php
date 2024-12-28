@@ -213,16 +213,27 @@ date_default_timezone_set("Asia/Colombo");
       include("connect.php");
       date_default_timezone_set("Asia/Colombo");
 
-
-
-
-
-
       ?>
+
       <div class="box box-info">
 
         <div class="box-header with-border">
-          <h3 class="box-title" style="text-transform: capitalize;">Order</h3>
+          <h3 class="box-title" style="text-transform: capitalize;">Order </h3>
+          
+          <?php 
+            $u_id = $_SESSION['SESS_MEMBER_ID'];
+            $result = query("SELECT * FROM user WHERE id = '$u_id'");
+            for ($i = 0; $r01 = $result->fetch(); $i++) {
+                $user_level = $r01['user_lewal'];  
+            }
+          ?>
+
+          <?php if($user_level == 5) { ?>
+          <a class="btn btn-primary btn-md pull-right" 
+           href="grn_order.php">
+                          Add Order
+                        </a>
+                        <?php } ?>
         </div>
 
         <div class="box-body d-block">
@@ -231,8 +242,6 @@ date_default_timezone_set("Asia/Colombo");
               <tr>
                 <th>NO</th>
                 <th>Invoice</th>
-                <th>Supplier</th>
-                <th>PO</th>
                 <th>status</th>
                 <th>Amount</th>
                 <th>#</th>
@@ -245,24 +254,36 @@ date_default_timezone_set("Asia/Colombo");
               $bill_total = 0;
              
 
-                $re = select_query("SELECT * FROM `purchases` WHERE action = '0' AND type = 'Order'");
+                $re = select_query("SELECT * FROM `purchases` WHERE action != '20' AND type = 'Order'");
                 for ($i = 0; $r0 = $re->fetch(); $i++) {
                   $bill = $r0['amount'];
+                  $in = $r0['invoice_no'];
+                  $act = $r0['action'];
                   $bill_total += $bill;
               ?>
                   <tr>
                     <td><?php echo ++$a;  ?></td>
                     <td><?php echo $r0['invoice_no'];  ?></td>
-                    <td><?php echo $r0['supplier_name'];  ?></td>
-                    <td><?php echo $r0['supplier_invoice'];  ?></td>
-                    <td><?php  if($r0['approve']=='approve'){
-                                     echo '<span class="badge bg-blue">Approve</span>'; 
+                    <td><?php  if($r0['approve']=='approve' && $r0['action']=='1'){
+                                     echo '<span class="badge bg-blue">Approve by RM</span>'; 
+                                     }elseif($r0['approve']=='approve' && $r0['action']=='2'){
+                                      echo '<span class="badge bg-blue">Approve by Sales Manager</span>'; 
+                                     }elseif($r0['approve']=='approve' && $r0['action']=='3'){
+                                      echo '<span class="badge bg-blue">Approve by Account</span>'; 
+                                     }elseif($r0['approve']=='approve' && $r0['action']=='4'){
+                                      echo '<span class="badge bg-blue">Approve by Stores</span>'; 
+                                     }elseif($r0['approve']=='reject'){
+                                      echo '<span class="badge bg-red">Order Reject</span>'; 
                                      }else{
                                         echo '<span class="badge">Pending</span>'; 
                                      }  ?></td>
                     <td><?php echo $bill; ?></td>
                     <td>
-                      <a href="grn_order_view.php?id=<?php echo $r0['invoice_no']; ?>" class="btn btn-primary btn-sm">View</a>
+                        <a class="btn btn-primary btn-sm" 
+                              href="job_summery.php?id=<?php echo $r0['invoice_no']; ?>" 
+                        >
+                          View
+                        </a>
                     </td>
                   </tr>
               <?php }
@@ -271,8 +292,6 @@ date_default_timezone_set("Asia/Colombo");
             </tbody>
             <tbody>
               <tr>
-                <td></td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td>

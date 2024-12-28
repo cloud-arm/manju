@@ -257,9 +257,7 @@ $user_level = $_SESSION['USER_LEWAL'];
                         ];
 
                         // Count total jobs for the job_no
-                        $countQuery = $db->prepare("SELECT COUNT(id) FROM sales_list WHERE job_no = :id");
-                        $countQuery->bindParam(':id', $id, PDO::PARAM_INT);
-                        $countQuery->execute();
+                        $countQuery = query("SELECT COUNT(id) FROM sales_list WHERE job_no = '$id' ");
                         $totalJobs = $countQuery->fetchColumn();
 
 
@@ -267,10 +265,8 @@ $user_level = $_SESSION['USER_LEWAL'];
                         // Ensure we have jobs under the job_no
                         if ($totalJobs > 0) {
                             // Count jobs by status for the job_no
-                            $statusQuery = $db->prepare("SELECT status, COUNT(id) as job_count FROM sales_list WHERE job_no = :id GROUP BY status");
-                            $statusQuery->bindParam(':id', $id, PDO::PARAM_INT);
-                            $statusQuery->execute();
-
+                            $statusQuery = query("SELECT status, COUNT(id) as job_count FROM sales_list WHERE job_no = '$id' GROUP BY status");
+                            
                             $totalProgress = 0;
 
                             // Loop through statuses and calculate total progress

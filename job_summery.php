@@ -19,21 +19,13 @@ $_SESSION['SESS_FORM'] = 'index';
                 <small>Details</small>
             </h1>
             <?php
-            $id = base64_decode($_GET['id']);
-            $result = select('sales_list', '*', 'id=' . $id);
-            if ($row = $result->fetch()) {
-                $location = $row['location'];
-                $width = $row['width'];
-                $height = $row['height'];
-                $product_name = $row['name'];
-                $status = $row['status'];
-                $job_no = $row['job_no'];
-                $status_id = $row['status_id'];
-                $about = $row['about'];
-            } else {
-                // Handle case where no data is found
-                $location = $width = $height = $product_name = 'N/A';
-            }
+                $location = 'location';
+                $width = 'width';
+                $height = 'height';
+                $product_name='name';
+                $status = 'status';
+                $job_no = 'job_no';
+                $address = "address";
             ?>
         </section>
 
@@ -51,63 +43,56 @@ $_SESSION['SESS_FORM'] = 'index';
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Product Name:</label>
+                                        <label>Branch Name:</label>
                                         <p><?php echo $product_name; ?></p>
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Discription:</label>
-                                        <p><?php echo $about; ?></p>
+                                        <label>Address:</label>
+                                        <p><?php echo $address; ?></p>
                                     </div>
 
                                     <?php
                             // Fetch measurement data from the database
-                            $result3 = select('sales_list', '*', 'id=' . $id);
+                            $id = $_GET['id'];
+                            $result3 = select('purchases', '*', "invoice_no='$id'");
                             if ($row = $result3->fetch()) {
+                                $act = $row['action'];
+                                $status = 'status';
+                                $reject = $row['approve'];
+                                $status_id = $row['action'];
+                                $note = $row['reject_note'];
                             ?>
-                                    <div class="form-group">
-                                        <label>Width:</label>
-                                        <p><?php echo $row['width'] ?></p>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Height:</label>
-                                        <p><?php echo $row['height'] ?> </p>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Square Area:</label>
-                                        <p><?php echo $row['sqrt'] ?> </p>
-                                    </div>
+                                    
 
                                     <?php 
-                                        $status = $row['status'];
                                         $icon = '';
                                         $badgeStyle = 'color: white; padding: 5px 20px; border-radius: 30px; display: inline-flex; align-items: center; justify-content: center; margin-top: 10px; font-size: 1.2rem;';
                                         $backgroundColor = '#7393B3'; // Default background color
 
-                                        if ($status == 'on_aprove') {
+                                        if ($status == 1) {
                                             $icon = 'fas fa-check-circle';
                                             $backgroundColor = '##ffc107'; // yellow for approve
-                                        } elseif ($status == 'printing') {
+                                        } elseif ($status == 2) {
                                             $icon = 'fas fa-print';
                                             $backgroundColor = '#007bff'; // Blue for printing
-                                        } elseif ($status == 'artwork') {
+                                        } elseif ($status == 3) {
                                             $icon = 'fas fa-palette';
                                             $backgroundColor = '#17a2b8'; // Coral for artwork
-                                        } elseif ($status == 'pending') {
+                                        } elseif ($status == 4) {
                                             $icon = 'fas fa-exclamation-circle';
                                             $backgroundColor = '#ffc107'; // Yellow for pending
-                                        } elseif ($status == 'measure') {
-                                            $icon = 'fas fa-ruler';
-                                            $backgroundColor = '#1434A4'; // Gray for measure
-                                        } elseif ($status == 'fix') {
-                                            $icon = 'fas fa-wrench';
-                                            $backgroundColor = '#5D3FD3'; // Teal for fix
-                                        } elseif ($status == 'complete') {
-                                            $icon = 'fas fa-check-double';
-                                            $backgroundColor = '#28a745'; // Green for complete
-                                        }
+                                        } 
+                                        // elseif ($status == 'measure') {
+                                        //     $icon = 'fas fa-ruler';
+                                        //     $backgroundColor = '#1434A4'; // Gray for measure
+                                        // } elseif ($status == 'fix') {
+                                        //     $icon = 'fas fa-wrench';
+                                        //     $backgroundColor = '#5D3FD3'; // Teal for fix
+                                        // } elseif ($status == 'complete') {
+                                        //     $icon = 'fas fa-check-double';
+                                        //     $backgroundColor = '#28a745'; // Green for complete
+                                        // }
 
                                         // Apply the background color to the badge
                                         if ($icon) {
@@ -118,16 +103,6 @@ $_SESSION['SESS_FORM'] = 'index';
                                                 </div>';
                                         }
                                         ?>
-
-                                    <?php if($status != 'measure'){ ?>
-                                    <div class="text-center" style="margin-top: 20px;">
-                                        <button onclick="edit_note(<?php echo $row['id']; ?>)"
-                                            class="btn btn-sm btn-info" style="padding: 5px 25px; font-size: 1rem;">
-                                            <i class="fas fa-edit"></i> Edit Note
-                                        </button>
-                                    </div>
-                                    <?php } ?>
-
 
                                     <?php if($status == 'measure'){ ?>
                                     <div class="text-center" style="margin-top: 20px;">
@@ -140,106 +115,8 @@ $_SESSION['SESS_FORM'] = 'index';
                                         </a>
                                     </div>
                                     <?php } ?>
-
-
-
-
-
                                     </tr>
-                                    <div class="container-up d-none" id="edit_popup_<?php echo $row['id']; ?>">
-                                        <div class="row w-70">
-                                            <div class="box box-success popup" style="width: 50%;">
-                                                <div class="box-header with-border">
-                                                    <h3 class="box-title">Edit details</h3>
-                                                    <small onclick="edit_close(<?php echo $row['id']; ?>)"
-                                                        class="btn btn-sm btn-success pull-right"><i
-                                                            class="fa fa-times"></i></small>
-                                                    <i class="fa fa-times"></i>
-                                                    </small>
-                                                </div>
-                                                <div class="box-body d-block">
-                                                    <form method="POST" action="edit_job_summery.php">
-                                                        <div class="row" style="display: block;">
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <label>Width</label>
-                                                                    <input type="text" name="width" class="form-control"
-                                                                        value="<?php echo $row['width']; ?>" required>
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <label>height</label>
-                                                                    <input type="text" name="height"
-                                                                        class="form-control"
-                                                                        value="<?php echo $row['height']; ?>" required>
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <label>Discription</label>
-                                                                    <input type="text" name="about" class="form-control"
-                                                                        value="<?php echo $row['about']; ?>" required>
-
-                                                                </div>
-                                                            </div>
-
-
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <label>note</label>
-                                                                    <input type="text" name="note" class="form-control"
-                                                                        value="<?php echo $row['note']; ?>" required>
-
-                                                                </div>
-                                                            </div>
-                                                            <?php if($status != 'measure' && $status != 'artwork'){ ?>
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <label>Designer note</label>
-
-
-                                                                    <input type="text" name="art_note"
-                                                                        class="form-control"
-                                                                        value="<?php echo $row['art_note']; ?>"
-                                                                        required>
-
-                                                                </div>
-                                                            </div>
-                                                            <?php } ?>
-
-
-
-
-
-
-                                                            <div class="col-md-12">
-
-                                                            </div>
-
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <input type="hidden" name="unit" value="1">
-                                                                    <input type="hidden" name="id"
-                                                                        value="<?php echo $row['id']; ?>">
-
-                                                                    <input type="submit"
-                                                                        style="margin-top: 23px; width: 100%;"
-                                                                        value="Save" class="btn btn-info btn-sm">
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                     <?php } ?>
 
                                     <div><br></div>
@@ -250,7 +127,7 @@ $_SESSION['SESS_FORM'] = 'index';
 
                     <div class="col-md-12" align="center">
                         <button class="btn btn-info" style="width: 150px; height: 25px; font-size: 10px; "
-                            onclick="window.location.href='job_view.php?id=<?php echo base64_encode($job_no); ?>'">
+                            onclick="window.location.href='grn_order_rp.php'">
                             Back
                         </button>
                     </div>
@@ -267,623 +144,575 @@ $_SESSION['SESS_FORM'] = 'index';
                 <div class="col-md-9">
                     <div class="col-md-12">
                         <ul class="timeline">
-                            <?php if ($status_id >= 0){ ?>
-                            <li>
-                                <?php
-                                    $id =  base64_decode($_GET['id']);
-                                    $result = select('sales_list', '*', 'id=' . $id);
-                                    if ($row = $result->fetch()) {
-                                        $location = $row['location'];
-                                        $width = $row['width'];
-                                        $height = $row['height'];
-                                        $product_name = $row['name'];
-                                        $status = $row['status'];
-                                        $job_no = $row['job_no'];
-                                        $m_date = $row['m_date'];
-                                        $sqrt = $row['sqrt'];
-                                        $m_img = $row['m_img'];
-                                        $approvel_doc = $row['approvel_doc'];
-                                        $sales_list_id=$row['id'];
-                                    }
-                                    ?>
-                                <i class="fa fa-ruler bg-blue"></i>
-                                <div class="timeline-item">
-                                    <?php 
-                                     $date='0000-00-00'; $time='00:00:00';
-                    
-                                        $re = select('visit', '*', 'id=' . $id . ' ');
-                                        $user_name = ''; // Initialize the variable to check later
-                                        
-                                        while ($row = $re->fetch()) {
-                                            $user_name = $row['user_name'];
-                                            $date=$row['date'];
-                                            $time=$row['time'];
-                                        }
-                                        
-                                        // Check if $user_name has a value; if not, set it to "Not set"
-                                        $display_name = !empty($user_name) ? $user_name : 'Not set';
-                                    ?>
-                                    <?php if ($status != 'measure') { ?>
 
-                                    <span class="time"><i class="fa fa-clock-o"></i> <?php echo $date.' | '.$time?>
-                                    </span>
-                                    <h3 class="timeline-header">
-                                        <a href="#">Measurement Added For</a> <?php echo $product_name ?>
-                                    </h3>
-                                    <?php } else { ?>
-                                    <span class="time"><i class="fa fa-clock-o"></i> <?php echo "not yet" ?> </span>
-                                    <h3 class="timeline-header">
-                                        <a href="#">Measurement details Form</a> aded via admin
-                                    </h3>
-                                    <?php } ?>
 
-                                    <!-- MEASUREMENT shows -->
-                                    <?php if ($status != 'measure') { ?>
-                                    <div class="timeline-body">
-                                        <p>Assigned measurer or admin input measurement details:</p>
-                                        <p><strong>Name:</strong> <?php echo $width ?>, <strong>Height:</strong>
-                                            <?php echo $height ?>, <strong>SQRT:</strong> <?php echo $sqrt ?></p>
-                                        <p><strong class="text-primary">Measurer Note:</strong>
-                                            <?php echo $row['note'] ?></p>
-                                        <?php if (!empty($m_img)) { ?>
-                                        <img src="app/save/uploads/product_img/<?php echo $m_img; ?>"
-                                            alt="Uploaded Photo" style="width: 200px; height: auto;">
-                                        <?php } else { ?>
-                                        No photo uploaded.
-                                        <?php } ?>
-                                    </div>
 
-                                    <div class="timeline-footer"
-                                        style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div>
-                                            <a class="btn btn-primary btn-xs">Read more</a>
-                                            <a class="btn btn-danger btn-xs">Delete</a>
-                                        </div>
-
-                                        <div style="margin-left: auto; font-size: 12px; color: #555;">
-                                            <?php 
-                                                $re = select('user_activity', '*', 'source_id=' . $id . ' AND activity="measure"');
-                                                $user_name = ''; // Initialize the variable to check later
-                                                
-                                                while ($row = $re->fetch()) {
-                                                    $user_name = $row['user_name'];
-                                                }
-                                                
-                                                // Check if $user_name has a value; if not, set it to "Not set"
-                                                $display_name = !empty($user_name) ? $user_name : 'Not set';
-                                            ?>
-                                            <span class="time">
-                                                <i class="fa fa-user" style="margin-right: 5px;"></i> done by
-                                                <?php echo $display_name ?>
-                                            </span>
-                                        </div>
-
-                                    </div>
-
-
-
-
-
-                                    <?php } ?>
-
-                                    <!-- Add Measurement Form -->
-                                    <?php if ($status == 'measure') { ?>
-
-                                    <div class="timeline-body">
-                                        <form method="POST" action="app/save/task_save.php"
-                                            enctype="multipart/form-data">
-                                            <div class="row" style="padding: 15px;">
-                                                <div class="form-group col-md-5">
-                                                    <label for="width">Width:</label>
-                                                    <input type="number" id="width" name="width" class="form-control"
-                                                        step="0.01" min="0" required>
-                                                </div>
-                                                <div class="form-group col-md-5">
-                                                    <label for="height">Height:</label>
-                                                    <input type="number" id="height" name="height" class="form-control"
-                                                        step="0.01" min="0" required>
-                                                </div>
-                                                <div class="form-group col-md-2">
-                                                    <label for="height">Unit</label>
-                                                    <select name="unit" class="form-control">
-                                                        <option value="ft">ft</option>
-                                                        <option value="inch">inch</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="form-group col-md-12">
-                                                    <label for="fileToUpload">Select Image to Upload:</label>
-                                                    <input type="file" name="fileToUpload" id="fileToUpload"
-                                                        class="form-control">
-                                                </div>
-
-                                                <div class="form-group col-md-12">
-                                                    <label for="note">Note:</label>
-                                                    <textarea name="note" class="form-control" rows="5"
-                                                        style="resize: none;"
-                                                        placeholder="Enter your note here"></textarea>
-                                                </div>
-
-                                                <div class="form-group col-md-12">
-                                                    <input type="hidden" name="id" value="<?php echo $sales_list_id;?>">
-                                                    <input type="hidden" name="id2" value="0">
-                                                    <input type="submit" value="Save" class="btn btn-info btn-sm"
-                                                        style="width: 100%; margin-top: 15px;">
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <?php } ?>
-
-
-                                </div>
-                            </li>
-
-                            <?php } ?>
-
-                            <?php if ($status_id >= 1){ ?>
-                            <li>
-                                <i class="fa fa-palette bg-aqua"></i>
-                                <div class="timeline-item">
-                                    <?php 
-                                     $date='0000-00-00'; $time='00:00:00';
-                    
-                                        $re = select('user_activity', '*', 'source_id=' . $id . ' AND activity="art_work"');
-                                        $user_name = ''; // Initialize the variable to check later
-                                        
-                                        while ($row = $re->fetch()) {
-                                            $user_name = $row['user_name'];
-                                            $date=$row['date'];
-                                            $time=$row['time'];
-                                        }
-                                        
-                                        // Check if $user_name has a value; if not, set it to "Not set"
-                                        $display_name = !empty($user_name) ? $user_name : 'Not set';
-                                    ?>
-                                    <?php if ($status != 'artwork') { ?>
-                                    <span class="time"><i
-                                            class="fa fa-clock-o"></i><?php echo $date.' | '.$time ?></span>
-                                    <h3 class="timeline-header">
-                                        <a href="#" class="text-primary">Art Work Completed</a>
-                                    </h3>
-
-                                    <div class="timeline-body">
-                                        <p>The artwork has been completed by the designer.</p>
-                                        <p><strong class="text-primary">Designer Note:</strong>
-                                            <?php echo $row['art_note']; ?></p>
-                                    </div>
-
-                                    <div class="timeline-footer"
-                                        style="display: flex; justify-content: space-between; align-items: center;">
-
-
-                                        <div style="margin-left: auto; font-size: 12px; color: #555;">
-
-                                            <span class="time">
-                                                <i class="fa fa-user" style="margin-right: 5px;"></i> done by
-                                                <?php echo $display_name ?>
-                                            </span>
-                                        </div>
-
-                                    </div>
-
-
-                                    <?php } ?>
-                                    <?php if ($status == 'artwork') { ?>
-                                    <span class="time"><i class="fa fa-clock-o"></i> not yet</span>
-                                    <h3 class="timeline-header">
-                                        <a href="#" class="text-primary">Add designer note</a>
-                                    </h3>
-
-                                    <div class="timeline-body">
-                                        <div class="row" style="padding: 15px;">
-                                            <div class="box box-success" style="width: 100%; padding: 20px;">
-
-
-                                                <!-- First form: Note and File Upload -->
-                                                <form method="POST"
-                                                    action="save/job/job_summery_save.php?id=<?php echo $id ?>"
-                                                    enctype="multipart/form-data">
-                                                    <div class="row" style="padding: 15px;">
-
-                                                        <div class="col-md-12">
-                                                            <div class="form-group">
-                                                                <label>Note</label>
-                                                                <textarea name="note" class="form-control" rows="5"
-                                                                    style="resize: none;" autocomplete="off"
-                                                                    placeholder="Enter your note here"></textarea>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-md-12">
-                                                            <div class="form-group">
-                                                                <input type="hidden" name="id2" value="1">
-                                                                <input type="submit"
-                                                                    style="margin-top: 23px; width: 100%;"
-                                                                    value="Save and Add Designer Note"
-                                                                    class="btn btn-info btn-sm">
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <?php } ?>
-
-                            </li>
-                            <?php } ?>
-
-                            <?php if ($status_id >= 2){ ?>
-                            <li>
-                                <i class="fa fa-check-circle bg-yellow"></i>
-                                <div class="timeline-item">
-                                    <?php 
-                                     $date='0000-00-00'; $time='00:00:00';
-                    
-                                        $re = select('user_activity', '*', 'source_id=' . $id . ' AND activity="approve"');
-                                        $user_name = ''; // Initialize the variable to check later
-                                        
-                                        while ($row = $re->fetch()) {
-                                            $user_name = $row['user_name'];
-                                            $date=$row['date'];
-                                            $time=$row['time'];
-                                        }
-                                        
-                                        // Check if $user_name has a value; if not, set it to "Not set"
-                                        $display_name = !empty($user_name) ? $user_name : 'Not set';
-                                    ?>
-
-                                    <?php if ($status != 'on_aprove' && $status != 'reject') { ?>
-                                    <span class="time"><i class="fa fa-clock-o"></i>
-                                        <?php echo $date.' | '.$time ?></span>
-                                    <h3 class="timeline-header"><a href="#">Job Approved taken successfully</a></h3>
-
-                                    <div class="timeline-body">
-                                        <p>Approval has been given by the admin with the following note and document:
-                                        </p>
-                                        <p><strong class="text-primary">Approve Note:</strong>
-                                            <?php echo $row['approvel_note'] ?></p>
-                                        <?php if (!empty($approvel_doc)) { ?>
-                                        <img src="app/save/uploads/product_img/<?php echo $approvel_doc; ?>"
-                                            alt="Uploaded Photo" style="width: 200px; height: auto;">
-                                        <?php } else { ?>
-                                        No photo uploaded.
-                                        <?php } ?>
-                                    </div>
-                                    <div class="timeline-footer"
-                                        style="display: flex; justify-content: space-between; align-items: center;">
-
-
-                                        <div style="margin-left: auto; font-size: 12px; color: #555;">
-
-                                            <span class="time">
-                                                <i class="fa fa-user" style="margin-right: 5px;"></i> done by
-                                                <?php echo $display_name ?>
-                                            </span>
-                                        </div>
-
-                                    </div>
-
-                                    <?php } ?>
-
-                                    <?php if ($status == 'on_aprove') { ?>
-
-                                    <span class="time"><i class="fa fa-clock-o"></i>0000-00-00</span>
-                                    <h3 class="timeline-header"><a href="#">Job Approved Form</a></h3>
-
-                                    <div class="timeline-body">
-                                        <div class="row" style="padding: 15px;">
-                                            <div class="box box-success" style="width: 100%; padding: 20px;">
-
-
-                                                <div class="box-body">
-                                                    <!-- First form: Note and File Upload -->
-                                                    <form method="POST"
-                                                        action="save/job/measure_save.php?id=<?php echo $id ?>"
-                                                        enctype="multipart/form-data">
-                                                        <div class="row" style="padding: 15px;">
-                                                            <div class="form-group col-md-12">
-                                                                <label for="note">Note:</label>
-                                                                <textarea name="note" class="form-control" rows="5"
-                                                                    style="resize: none;" autocomplete="off"
-                                                                    placeholder="Enter your note here"></textarea>
-                                                            </div>
-
-                                                            <div class="form-group col-md-12">
-                                                                <label for="document">Upload Document (PDF or
-                                                                    Image):</label>
-                                                                <input type="file" name="document" class="form-control"
-                                                                    accept=".pdf,.jpg,.jpeg,.png">
-                                                            </div>
-
-                                                            <div class="form-group col-md-12">
-                                                                <div class="row">
-                                                                    <!-- Save and Accept Button -->
-                                                                    <div class="col-md-6">
-                                                                        <input type="hidden" name="id2" id="id2"
-                                                                            value="0">
-                                                                        <!-- Default id2 value for "Save and Accept" -->
-                                                                        <button type="submit"
-                                                                            class="btn btn-info btn-sm"
-                                                                            style="width: 100%; margin-top: 15px;">Save
-                                                                            and Accept</button>
-                                                                    </div>
-
-                                                                    <!-- Decline Button -->
-                                                                    <div class="col-md-6">
-                                                                        <button type="submit" name="id2" value="2"
-                                                                            class="btn btn-danger btn-sm"
-                                                                            style="width: 100%; margin-top: 15px;">Decline</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <?php }if($status == 'reject'){?>
-
-                                    <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-                                    <h3 class="timeline-header"><a href="#">Job Rejected</a></h3>
-                                    <div class="timeline-body">
-                                        <p>The job request was rejected by the admin and cannot be processed further.
-                                        </p>
-                                        </p>
-                                        <p><strong class="text-primary">REJECT</strong>
-                                        </p>
-
-                                    </div>
-                                </div>
-
-                                <?php } ?>
-
-
-                    </div>
-                    </li>
-                    <?php } ?>
-
-                    <?php if ($status_id >= 4){ ?>
-                    <li>
-                        <?php 
-                                     $date='0000-00-00'; $time='00:00:00';
-                    
-                                        $re = select('user_activity', '*', 'source_id=' . $id . ' AND activity="printing"');
-                                        $user_name = ''; // Initialize the variable to check later
-                                        
-                                        while ($row = $re->fetch()) {
-                                            $user_name = $row['user_name'];
-                                            $date=$row['date'];
-                                            $time=$row['time'];
-                                        }
-                                        
-                                        // Check if $user_name has a value; if not, set it to "Not set"
-                                        $display_name = !empty($user_name) ? $user_name : 'Not set';
-                                    ?>
-                        <i class="fa fa-print bg-purple"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fa fa-clock-o"></i><?php echo $date.' | '.$time ?></span>
-                            <h3 class="timeline-header"><a href="#">Printing Completed</a></h3>
-                            <div class="timeline-body">
-                                <p>The product was printed by the printing department.</p>
-                                <p><strong>Printing Note:</strong> <?php echo $row['print_note'] ?></p>
-                                <p><strong>Printing Quantity:</strong> <?php echo $row['print_qty'] ?></p>
-                            </div>
-                            <div class="timeline-footer"
-                                style="display: flex; justify-content: space-between; align-items: center;">
-
-                                <div style="margin-left: auto; font-size: 12px; color: #555;">
-
-                                    <span class="time">
-                                        <i class="fa fa-user" style="margin-right: 5px;"></i> done by
-                                        <?php echo $display_name ?>
-                                    </span>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </li>
-                    <?php } ?>
-
-                    <?php if ($status_id >= 4){ ?>
-                    <li>
-                        <?php 
-                                     $date='0000-00-00'; $time='00:00:00';
-                    
-                                        $re = select('user_activity', '*', 'source_id=' . $id . ' AND activity="fix"');
-                                        $user_name = ''; // Initialize the variable to check later
-                                        
-                                        while ($row = $re->fetch()) {
-                                            $user_name = $row['user_name'];
-                                            $date=$row['date'];
-                                            $time=$row['time'];
-                                        }
-                                        
-                                        // Check if $user_name has a value; if not, set it to "Not set"
-                                        $display_name = !empty($user_name) ? $user_name : 'Not set';
-                                    ?>
-                        <i class="fa fa-wrench bg-maroon"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fa fa-clock-o"></i> <?php echo $date.' | '.$time ?></span>
-                            <h3 class="timeline-header"><a href="#">Fix Completed</a></h3>
-                            <div class="timeline-body">
-                                <?php if($status == 'fix') {?>
-
-                                <div class="box box-info">
-                                    <div class="box-header">
-                                        <h3>FIX Materials <small>Add</small></h3>
-                                    </div>
-                                    <div
-                                        class="box-body <?php if ($status == 'fix' || $status == 'complete') {} else { echo 'd-none'; } ?>">
-                                        <form action="save/job/job_fix_save.php?id=<?php echo $id ?>" method="post">
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label>Used Materials</label>
-                                                        <select class="form-control select2 " id="mat_id" name="mat_id"
-                                                            onchange="pro_select()" style="width: 100%;" tabindex="1"
-                                                            autofocus required>
-                                                            <?php 
-                                                                        $result = select('materials', '*');
-                                                                        while ($row = $result->fetch()) { 
-                                                                            $mat_id = $row['id']; 
-                                                                    ?>
-                                                            <option value="<?php echo $row['id']; ?>">
-                                                                <?php echo $row['name']; ?>
-                                                            </option>
-                                                            <?php } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                                <label>Unit</label>
-                                                            <select class="form-control select2" name="unit" id="unit"
-                                                                style="width: 100%;" tabindex="1" autofocus>
-                                                                <option value="0">Default</option>
-
-                                                                <!-- Options will be populated dynamically by JavaScript -->
-                                                            </select>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label>Quantity</label>
-                                                        <input type="number" class="form-control" name="qty" id="qty"
-                                                            step="0.001" min="0" style="width: 100%;" required>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <input type="hidden" value="1" name="id2">
-                                                        <input type="submit" style="margin-top: 23px; width: 100%;"
-                                                            id="u3" value="Save" class="btn btn-info btn-sm">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-
-                                        <div class="box-body">
-                                            <table id="example2" class="table table-bordered table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>ID</th>
-                                                        <th>Name</th>
-                                                        <th>Unit</th>
-                                                        <th>Type</th>
-                                                        <th>QTY</th>
-                                                        <th>@</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-                                                         // Fetch fix materials data from the database
-                                                          $result = select('fix_materials', '*', 'sales_list_id=' . $id);
-                                                           while ($row = $result->fetch()) { ?>
-                                                    <tr>
-                                                        <td><?php echo $row['id']; ?></td>
-                                                        <td><?php echo $row['mat_name']; ?></td>
-                                                        <td><?php echo $row['unit']; ?></td>
-                                                        <td><?php echo $row['type']; ?></td>
-                                                        <td><?php echo $row['qty']; ?></td>
-                                                        <td> <a class="btn btn-sm btn-danger"
-                                                                onclick="confirmDelete2(<?php echo $row['id']; ?>)"><i
-                                                                    class="fa fa-trash"></i></a></td>
-
-                                                    </tr>
-                                                    <?php } ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <!-- Fix done button -->
-                                        <form action="save/job/job_fix_save.php?id=<?php echo $id; ?>" method="post">
-                                            <input type="hidden" value="0" name="id2">
-                                            <!-- Set id2 to 0 for Fix done -->
-                                            <?php if ($status == 'fix') { ?>
-                                            <button type="submit" class="btn btn-sm btn-info"
-                                                style="padding: 8px 20px;">Fix done</button>
-                                            <?php } ?>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <?php } ?>
-                            <?php if($status != 'fix') {?>
-
-                            <div class="box-body">
-                                <table id="example2" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>QTY</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                                    // Fetch fix materials data from the database
-                                                    $result = select('fix_materials', '*', 'sales_list_id=' . $id);
-                                                    while ($row = $result->fetch()) { ?>
-                                        <tr>
-                                            <td><?php echo $row['id']; ?></td>
-                                            <td><?php echo $row['mat_name']; ?></td>
-                                            <td><?php echo $row['type']; ?></td>
-                                            <td><?php echo $row['qty']; ?></td>
-
-
-                                        </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <hr>
-
-                            <?php }  ?>
-                            <div class="timeline-footer"
-                                style="display: flex; justify-content: space-between; align-items: center;">
-
-
-                                <div style="margin-left: auto; font-size: 12px; color: #555;">
-
-                                    <span class="time">
-                                        <i class="fa fa-user" style="margin-right: 5px;"></i> done by
-                                        <?php echo $display_name ?>
-                                    </span>
-                                </div>
-
-                            </div>
-                        </div>
-
-                </div>
-                </li>
-                <?php } ?>
-
-                <?php if ($status_id >= 5){ ?>
+                <?php if ($status_id >= 0){ ?>
                 <li>
                     <i class="fa fa-check-circle bg-green"></i>
                     <div class="timeline-item">
                         <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
-                        <h3 class="timeline-header"><a href="#">Job Completed</a></h3>
+                        <h3 class="timeline-header"><a href="#">Purchases Order Details</a></h3>
+                        <div class="box-body">
+                                            <table id="example2" class="table table-bordered table-striped">
+                                                <thead>
+                                                <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                                
+                                <th>#</th>
+
+                            </tr>
+                                                </thead>
+                                                <tbody>
+                            <?php
+                            // Fetch purchase list data based on invoice number
+                            $r1 = select_query("SELECT * FROM purchases_list WHERE invoice_no='$id' AND type='Order'");
+                            $i = 1; // Initialize counter for numbering rows
+                            while ($row = $r1->fetch()) {
+                                $invo = $row['invoice_no'];
+                                $type = $row['type'];
+                                $date = $row['date'];
+                                $qty = $row['qty'];
+                                $action = $row['action'];
+                                //$amount = $row['amount'];
+                                $price = $row['sell'];
+                                $id = $row['id'];
+                                $approved = $row['approve'];
+                                $name = $row['name'];
+
+
+                                // Only display rows where approval is not equal to 5
+                                if ($approved != 5) {
+                            ?>
+                            <tr>
+                                <td><?php echo $i++; ?></td> <!-- Increment row number -->
+                                <td> <a href="grn_summery.php?id=<?php echo $id; ?>"  style="width: 120px; text-align: center; line-height: 32px; text-decoration: none;"><?php echo $name; ?></a>
+                                </td>
+                                <td><?php echo $type; ?></td>
+                                <td><?php echo $date; ?></td>
+                                <td><?php echo $qty; ?></td>
+                                <td><?php echo $price; ?></td>
+
+                                <td><?php echo $action ?></td>
+                                 <?php  
+                                    $u_id = $_SESSION['SESS_MEMBER_ID'];
+                                    $result = query("SELECT * FROM user WHERE id = '$u_id'");
+                                    for ($i = 0; $r01 = $result->fetch(); $i++) {
+                                        $user_level = $r01['user_lewal'];  
+                                    }
+                                 ?>
+                                <td>
+                                    <!-- if logged user is RM -->
+                                    <?php if ($user_level == 1): ?>
+                                    <?php if ($approved != 1 && $approved != 20): ?>
+                                    <!-- Hide buttons if approved is 1 or 5 -->
+                                    <a class="btn btn-danger" onclick="confirmApp(<?php echo $id; ?>)">
+                                        <i class="fas fa-check-circle"></i>
+                                    </a>
+                                    <?php endif; ?>
+
+                                    <?php if ($approved != 5 && $approved != 20): ?>
+                                    <!-- Hide edit button only when approved is 5 -->
+                                    <a class="btn btn-danger" onclick="edit_note(<?php echo $row['id']; ?>)">
+                                        <i class="fas fa-times-circle"></i>
+                                    </a>
+                                    <a class="btn btn-danger" onclick="edit_note2(<?php echo $row['id']; ?>)">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                    <?php endif; ?>
+
+                                </td>
+
+
+                            </tr>
+
+                            <div class="container-up d-none" id="edit_popup_2<?php echo $row['id']; ?>">
+                                <div class="row w-70">
+                                    <div class="box box-success popup" style="width: 100%;">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Edit details</h3>
+                                            <small onclick="edit_close(<?php echo $row['id']; ?>)"
+                                                class="btn btn-sm btn-success pull-right"><i
+                                                    class="fa fa-times"></i></small>
+                                            <i class="fa fa-times"></i>
+                                            </small>
+                                        </div>
+                                        <div class="box-body d-block">
+                                            <form method="POST" action="edit_grn_order.php">
+                                                <div class="row" style="display: block;">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>qty</label>
+                                                            <input type="number" name="qty" class="form-control"
+                                                                value="" required>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="emp_id" value="<?php echo $u_id ?>">
+                                                        <input type="hidden" name="id"
+                                                            value="<?php echo $row['id']; ?>">
+
+                                                        <input type="submit" style="margin-top: 23px; width: 100%;"
+                                                            value="Save" class="btn btn-info btn-sm">
+                                                    </div>
+                                                </div>
+
+                                        </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container-up d-none" id="edit_popup_<?php echo $row['id']; ?>">
+                                <div class="row w-70">
+                                    <div class="box box-success popup" style="width: 100%;">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Reject details</h3>
+                                            <small onclick="edit_close(<?php echo $row['id']; ?>)"
+                                                class="btn btn-sm btn-success pull-right"><i
+                                                    class="fa fa-times"></i></small>
+                                            <i class="fa fa-times"></i>
+                                            </small>
+                                        </div>
+                                        <div class="box-body d-block">
+                                            <form method="POST" action="reject_grn_order.php">
+                                                <div class="row" style="display: block;">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>note</label>
+                                                            <input type="text" name="note" class="form-control"
+                                                                value="" required>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="emp_id" value="<?php echo $u_id ?>">
+                                                        <input type="hidden" name="id"
+                                                            value="<?php echo $row['id']; ?>">
+
+                                                        <input type="submit" style="margin-top: 23px; width: 100%;"
+                                                            value="Save" class="btn btn-info btn-sm">
+                                                    </div>
+                                                </div>
+
+                                        </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                </div>
+                <?php
+                        } 
+                        ?>
+                <?php
+        }
+    
+    ?>
+                </tbody>
+                                            </table>
+                                        </div>
                     </div>
                 </li>
                 <?php } ?>
+
+                <?php if ($status_id >= 1){ ?>
+                    <li>
+                    <i class="fa fa-check-circle bg-green"></i>
+                    <div class="timeline-item p-3 bg-light rounded shadow-sm">
+                        <span class="time text-muted"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                        <h3 class="timeline-header"><a href="#" class="text-primary">Purchases Order Details</a></h3>
+
+                        <div class="row mt-3 align-items-center box-body">
+                            <div class="col-md-6">
+                            <?php if($reject == "approve" && $act >= 2) {?>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order Approve By Sales Manager:</h5>
+                                <?php }elseif($reject == "reject"  && $act == 1){ ?>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order Reject By Sales Manager:</h5>
+                                <?php }else { ?>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order is waiting for Sales Manager Approval:</h5>
+                               <?php } ?>
+                            </div>
+
+                            <?php 
+                                $u_id = $_SESSION['SESS_MEMBER_ID']; 
+                                $result = query("SELECT * FROM user WHERE id = '$u_id'");
+                                for ($i = 0; $r01 = $result->fetch(); $i++) {
+                                    $user_level = $r01['user_lewal'];  
+                                } 
+                            ?>
+                        <div  <?php if ($user_level != 2): ?>
+                                style="display: none;"
+                            <?php endif; ?>
+                            >
+                            <div class="col-md-3">
+                                <?php $u_id = $_SESSION['SESS_MEMBER_ID'];  ?>
+                                <a
+                                    <?php if ($act == 1 && $reject != "reject"): ?>
+                                        href="purchase_order_approve.php?id=<?php echo $_GET['id']; ?>&emp_id=<?php echo $u_id ?>"
+                                        class="btn btn-primary btn-sm w-100"
+                                    <?php else: ?>
+                                        class="btn btn-primary btn-sm disabled w-100"
+                                    <?php endif; ?>
+                                >
+                                    Approve
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a
+                                    <?php if ($act == 1 && $reject != "reject"): ?>
+                                        class="btn btn-danger btn-sm w-100"
+                                        onclick="edit_notecc()"
+                                    <?php else: ?>
+                                        class="btn btn-danger btn-sm disabled w-100"
+                                    <?php endif; ?>
+                                >
+                                    Reject
+                                </a>
+                            </div>
+
+                            <div class="container-up d-none" id="edit_popup_3">
+                                <div class="row w-70">
+                                    <div class="box box-success popup" style="width: 100%;">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Reject details</h3>
+                                            <small onclick="edit_close(<?php echo $_GET['id']; ?>)"
+                                                class="btn btn-sm btn-success pull-right"><i
+                                                    class="fa fa-times"></i></small>
+                                            <i class="fa fa-times"></i>
+                                            </small>
+                                        </div>
+                                        <div class="box-body d-block">
+                                            <form method="POST" action="grm_purchase_reject.php">
+                                                <div class="row" style="display: block;">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>note</label>
+                                                            <input type="text" name="note" class="form-control"
+                                                                value="" required>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="emp_id" value="<?php echo $u_id ?>">
+                                                        <input type="hidden" name="id"
+                                                            value="<?php echo $_GET['id']; ?>">
+
+                                                        <input type="submit" style="margin-top: 23px; width: 100%;"
+                                                            value="Save" class="btn btn-info btn-sm">
+                                                    </div>
+                                                </div>
+
+                                        </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+        </div>
+    </div>
+</div>
+
+                </li>
+                <?php } ?>
+
+                <?php if ($status_id >= 2){ ?>
+                    <li>
+                    <i class="fa fa-check-circle bg-green"></i>
+                    <div class="timeline-item p-3 bg-light rounded shadow-sm">
+                        <span class="time text-muted"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                        <h3 class="timeline-header"><a href="#" class="text-primary">Purchases Order Details</a></h3>
+
+                        <div class="row mt-3 align-items-center  box-body">
+                            <div class="col-md-6">
+                                <?php if($reject == "approve" && $act >= 3) {?>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order Approve By Accountant:</h5>
+                                <?php }elseif($reject == "reject" && $act == 2){ ?>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order Reject By Accountant:</h5>
+                                <?php }else { ?>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order is waiting for Sales Manager Approval:</h5>
+                               <?php } ?>
+                            </div>
+
+                            <?php 
+                                $u_id = $_SESSION['SESS_MEMBER_ID']; 
+                                $result = query("SELECT * FROM user WHERE id = '$u_id'");
+                                for ($i = 0; $r01 = $result->fetch(); $i++) {
+                                    $user_level = $r01['user_lewal'];  
+                                } 
+                            ?>
+                        <div  <?php if ($user_level != 3): ?>
+                                style="display: none;"
+                            <?php endif; ?>
+                            >
+                            <div class="col-md-3">
+                                <a
+                                    <?php if ($act == 2 && $reject != "reject"): ?>
+                                        href="purchase_order_approve.php?id=<?php echo $_GET['id']; ?>&emp_id=<?php echo $u_id ?>"
+                                        class="btn btn-primary btn-sm w-100"
+                                    <?php else: ?>
+                                        class="btn btn-primary btn-sm disabled w-100"
+                                    <?php endif; ?>
+                                >
+                                    Approve
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a
+                                    <?php if ($act == 2 && $reject != "reject"): ?>
+                                        href="grm_purchase_reject.php?id=<?php echo $_GET['id']; ?>&emp_id=<?php echo $u_id ?>"
+                                        class="btn btn-danger btn-sm w-100"
+                                    <?php else: ?>
+                                        class="btn btn-danger btn-sm disabled w-100"
+                                    <?php endif; ?>
+                                >
+                                    Reject
+                                </a>
+                            </div>
+                        </div>
+    </div>
+</div>
+
+                </li>
+                <?php } ?>
+
+                <?php if ($status_id >= 3){ ?>
+                    <li>
+                    <i class="fa fa-check-circle bg-green"></i>
+                    <div class="timeline-item">
+                        <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                        <h3 class="timeline-header"><a href="#">Purchases Order Details</a></h3>
+                        <div class="box-body">
+                                            <table id="example2" class="table table-bordered table-striped">
+                                                <thead>
+                                                <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                                
+                                <th>#</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                            // Fetch purchase list data based on invoice number
+                            $id = $_GET['id'];
+                            $r1 = select_query("SELECT * FROM purchases_list WHERE invoice_no='$id' AND type='Order'");
+                            while ($row = $r1->fetch()) {
+                                $invo = $row['invoice_no'];
+                                $type = $row['type'];
+                                $date = $row['date'];
+                                $qty = $row['qty'];
+                                $action = $row['action'];
+                                //$amount = $row['amount'];
+                                $price = $row['sell'];
+                                $id = $row['id'];
+                                $approved = $row['approve'];
+                                $name = $row['name'];
+
+
+                                // Only display rows where approval is not equal to 5
+                                if ($approved != 5) {
+                            ?>
+                            <tr>
+                                <td><?php echo $i++; ?></td> <!-- Increment row number -->
+                                <td> <a href="grn_summery.php?id=<?php echo $id; ?>"  style="width: 120px; text-align: center; line-height: 32px; text-decoration: none;"><?php echo $name; ?></a>
+                                </td>
+                                <td><?php echo $type; ?></td>
+                                <td><?php echo $date; ?></td>
+                                <td><?php echo $qty; ?></td>
+                                <td><?php echo $price; ?></td>
+
+                                <td><?php  echo $action ?></td>
+                                 <?php  
+                                    $u_id = $_SESSION['SESS_MEMBER_ID'];
+                                    $result = query("SELECT * FROM user WHERE id = '$u_id'");
+                                    for ($i = 0; $r01 = $result->fetch(); $i++) {
+                                        $user_level = $r01['user_lewal'];  
+                                    }
+                                 ?>
+                                <td> 
+                                    <!-- if logged user is stores manager -->
+                                    <?php if ($user_level == 4): ?>
+                                        <?php if ($approved != 5 && $approved != 20): ?>
+                                        <a class="btn btn-danger" onclick="confirmApp2(<?php echo $id; ?>)">
+                                        <i class="fas fa-check-circle"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                    <?php if ($approved != 2 && $approved != 20): ?>
+                                    <!-- Hide buttons if approved is 1 or 5 -->
+                                    <a class="btn btn-danger" onclick="edit_note(<?php echo $row['id']; ?>)">
+                                        <i class="fas fa-times-circle"></i>
+                                    </a>
+                                    <a class="btn btn-danger" onclick="edit_note2(<?php echo $row['id']; ?>)">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                    <?php endif; ?>
+
+                                </td>
+
+
+                            </tr>
+
+                            <div class="container-up d-none" id="edit_popup_2<?php echo $row['id']; ?>">
+                                <div class="row w-70">
+                                    <div class="box box-success popup" style="width: 100%;">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Edit details</h3>
+                                            <small onclick="edit_close(<?php echo $row['id']; ?>)"
+                                                class="btn btn-sm btn-success pull-right"><i
+                                                    class="fa fa-times"></i></small>
+                                            <i class="fa fa-times"></i>
+                                            </small>
+                                        </div>
+                                        <div class="box-body d-block">
+                                            <form method="POST" action="edit_grn_order.php">
+                                                <div class="row" style="display: block;">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>qty</label>
+                                                            <input type="number" name="qty" class="form-control"
+                                                                value="" required>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="emp_id" value="<?php echo $u_id ?>">
+                                                        <input type="hidden" name="id"
+                                                            value="<?php echo $row['id']; ?>">
+
+                                                        <input type="submit" style="margin-top: 23px; width: 100%;"
+                                                            value="Save" class="btn btn-info btn-sm">
+                                                    </div>
+                                                </div>
+
+                                        </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container-up d-none" id="edit_popup_<?php echo $row['id']; ?>">
+                                <div class="row w-70">
+                                    <div class="box box-success popup" style="width: 100%;">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Reject details</h3>
+                                            <small onclick="edit_close(<?php echo $row['id']; ?>)"
+                                                class="btn btn-sm btn-success pull-right"><i
+                                                    class="fa fa-times"></i></small>
+                                            <i class="fa fa-times"></i>
+                                            </small>
+                                        </div>
+                                        <div class="box-body d-block">
+                                            <form method="POST" action="reject_grn_order.php">
+                                                <div class="row" style="display: block;">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>note</label>
+                                                            <input type="text" name="note" class="form-control"
+                                                                value="" required>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="emp_id" value="<?php echo $u_id ?>">
+                                                        <input type="hidden" name="id"
+                                                            value="<?php echo $row['id']; ?>">
+
+                                                        <input type="submit" style="margin-top: 23px; width: 100%;"
+                                                            value="Save" class="btn btn-info btn-sm">
+                                                    </div>
+                                                </div>
+
+                                        </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                </div>
+                <?php
+                        } 
+                        ?>
+                <?php
+        }
+    
+    ?>
+                </tbody>
+                                            </table>
+                                        </div>
+                    </div>
+                </li>
+                <?php } ?>
+
+                <?php if ($reject == "reject"){ ?>
+                    <li>
+                    <i class="fa fa-check-circle bg-green"></i>
+                    <div class="timeline-item p-3 bg-light rounded shadow-sm">
+                        <span class="time text-muted"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                        <h3 class="timeline-header"><a href="#" class="text-primary">Reject Order Details</a></h3>
+
+                        <div class="row mt-3 align-items-center  box-body">
+                        <div class="col-md-12">
+                                <h5 class="timeline-header font-weight-bold"><?php echo $note ?></h5>
+                            </div>
+                        </div>
+                    </div>
+
+                </li>
+                   <?php } ?>
                 </ul>
             </div>
 
@@ -919,14 +748,41 @@ $_SESSION['SESS_FORM'] = 'index';
     <script src="../../plugins/fastclick/fastclick.js"></script>
 
     <script>
+  function edit_notecc() {
+        //  $(".popup").addClass("d-none");
+        $("#edit_popup_3").removeClass("d-none");
+    }
+
     function edit_note(i) {
         //  $(".popup").addClass("d-none");
         $("#edit_popup_" + i).removeClass("d-none");
     }
 
+    function edit_note2(i) {
+        //  $(".popup").addClass("d-none");
+        $("#edit_popup_2" + i).removeClass("d-none");
+    }
+
+  
+
+    function confirmApp(id) {
+        if (confirm('Are you sure you want to Approve this item?')) {
+            // Redirect to a PHP page that handles the deletion
+            window.location.href = 'grn_order_app_save.php?id=' + id + '&id2=1' + '&app = 0';
+        }
+    }
+
+    function confirmApp2(id) {
+        if (confirm('Are you sure you want to Approve this item?')) {
+            // Redirect to a PHP page that handles the deletion
+            window.location.href = 'purchase_order_stores_approve.php?id=' + id;
+        }
+    }
+
     function edit_close(i) {
         //  $(".popup").addClass("d-none");
         $("#edit_popup_" + i).addClass("d-none");
+        $("#edit_popup_2" + i).addClass("d-none");
     }
 
     function pro_select() {

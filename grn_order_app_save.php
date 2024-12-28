@@ -36,9 +36,7 @@ if ($id2 == 5) {
 
 } else {
     // Update approval status to '1' otherwise
-    $result = update('purchases_list', ['approve' => '1'], 'id=' . $id, '');
-
-
+    $result = update('purchases_list', ['approve' => '1','action'=> 'approve by RM'], 'id=' . $id, '');
 }
 
     // Fetch the invoice number for the given purchase list item
@@ -57,7 +55,14 @@ if ($id2 == 5) {
 echo $count;
     // If no rows have 'approve=0', update the 'purchases' table
     if ($count == 0) {
-        $result = update('purchases', ['approve' => 'approve'], "invoice_no='$invo'", '');
+        $result = update(
+            'purchases', 
+            [
+                'approve' => 'approve',
+                'action' => '1',
+            ], 
+            "invoice_no='$invo'", 
+            '');
         echo $invo;
 
 
@@ -72,7 +77,7 @@ while ($row = $r1->fetch()) {
 if($app == 0){
 
 // Redirect back to the order view page after the process is complete
-header("location:grn_order_view.php?id=$invo");
+header("location:job_summery.php?id=$invo");
 }
 else{
     header("location:owner_app/grn_order_view_mob.php?id=$invo");

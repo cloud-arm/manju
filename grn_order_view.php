@@ -70,9 +70,6 @@ $invo = $_GET['id'];
     <h5>
         <strong style="color: #007bff;">Invoice no:</strong> <?php echo $invo; ?>
         <span style="margin-left: 20px;">
-            <strong style="color: #007bff;">PO No:</strong> <?php echo $sup_invo; ?>
-        </span>
-        <span style="margin-left: 20px;">
             <strong style="color: #007bff;">Note:</strong> <?php echo $remark; ?>
         </span>
     </h5>
@@ -94,10 +91,8 @@ $invo = $_GET['id'];
                                 <th>Type</th>
                                 <th>Date</th>
                                 <th>Quantity</th>
-                                <th>Amount</th>
                                 <th>Price</th>
                                 <th>Action</th>
-                                <th>Unit</th>
                                 
                                 <th>#</th>
 
@@ -131,32 +126,57 @@ $invo = $_GET['id'];
                                 <td><?php echo $type; ?></td>
                                 <td><?php echo $date; ?></td>
                                 <td><?php echo $qty; ?></td>
-                                <td><?php echo $price*$qty; ?></td>
                                 <td><?php echo $price; ?></td>
 
-                                <td><?php if($approved == 1){
+                                <td><?php if($approved == 1 || $approved == 2){
                                     echo "Approved";   
-                                } 
-                                    if($approved == 0){
+                                } if($approved == 0){
                                         echo "Pending";
+                                    }if($approved == 20){
+                                        echo "Reject by RM";
                                     }
                                  ?></td>
-                                 <td><?php echo $row['unit']?></td>
+                                 <?php  
+                                    $u_id = $_SESSION['SESS_MEMBER_ID'];
+                                    $result = query("SELECT * FROM user WHERE id = '$u_id'");
+                                    for ($i = 0; $r01 = $result->fetch(); $i++) {
+                                        $user_level = $r01['user_lewal'];  
+                                    }
+                                 ?>
                                 <td>
+                                    <!-- if logged user is RM -->
                                     <?php if ($user_level == 1): ?>
-                                    <?php if ($approved != 1 && $approved != 5): ?>
+                                    <?php if ($approved != 1 && $approved != 20): ?>
                                     <!-- Hide buttons if approved is 1 or 5 -->
                                     <a class="btn btn-danger" onclick="confirmApp(<?php echo $id; ?>)">
                                         <i class="fas fa-check-circle"></i>
                                     </a>
-                                    <a class="btn btn-danger" onclick="confirmDelete(<?php echo $id; ?>)">
-                                        <i class="fas fa-times-circle"></i>
-                                    </a>
                                     <?php endif; ?>
 
-                                    <?php if ($approved != 5): ?>
+                                    <?php if ($approved != 5 && $approved != 20): ?>
                                     <!-- Hide edit button only when approved is 5 -->
                                     <a class="btn btn-danger" onclick="edit_note(<?php echo $row['id']; ?>)">
+                                        <i class="fas fa-times-circle"></i>
+                                    </a>
+                                    <a class="btn btn-danger" onclick="edit_note2(<?php echo $row['id']; ?>)">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                    <?php endif; ?>
+
+                                    <!-- if logged user is stores manager -->
+                                    <?php if ($user_level == 4): ?>
+                                        <?php if ($approved != 5 && $approved != 20): ?>
+                                        <a class="btn btn-danger" onclick="confirmApp2(<?php echo $id; ?>)">
+                                        <i class="fas fa-check-circle"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                    <?php if ($approved != 2 && $approved != 20): ?>
+                                    <!-- Hide buttons if approved is 1 or 5 -->
+                                    <a class="btn btn-danger" onclick="edit_note(<?php echo $row['id']; ?>)">
+                                        <i class="fas fa-times-circle"></i>
+                                    </a>
+                                    <a class="btn btn-danger" onclick="edit_note2(<?php echo $row['id']; ?>)">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <?php endif; ?>
@@ -166,9 +186,10 @@ $invo = $_GET['id'];
 
 
                             </tr>
-                            <div class="container-up d-none" id="edit_popup_<?php echo $row['id']; ?>">
+
+                            <div class="container-up d-none" id="edit_popup_2<?php echo $row['id']; ?>">
                                 <div class="row w-70">
-                                    <div class="box box-success popup" style="width: 50%;">
+                                    <div class="box box-success popup" style="width: 100%;">
                                         <div class="box-header with-border">
                                             <h3 class="box-title">Edit details</h3>
                                             <small onclick="edit_close(<?php echo $row['id']; ?>)"
@@ -183,29 +204,12 @@ $invo = $_GET['id'];
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label>qty</label>
-                                                            <input type="text" name="qty" class="form-control"
-                                                                value="<?php echo $row['qty']; ?>" required>
+                                                            <input type="number" name="qty" class="form-control"
+                                                                value="" required>
 
                                                         </div>
                                                     </div>
-
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label>Price</label>
-                                                            <input type="text" name="sell" class="form-control"
-                                                                value="<?php echo $row['sell']; ?>" required>
-
-                                                        </div>
-                                                    </div>
-
-
                                                 </div>
-
-
-
-
-
-
 
                                                 <div class="col-md-12">
 
@@ -213,7 +217,53 @@ $invo = $_GET['id'];
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <input type="hidden" name="unit" value="1">
+                                                        <input type="hidden" name="emp_id" value="<?php echo $u_id ?>">
+                                                        <input type="hidden" name="id"
+                                                            value="<?php echo $row['id']; ?>">
+
+                                                        <input type="submit" style="margin-top: 23px; width: 100%;"
+                                                            value="Save" class="btn btn-info btn-sm">
+                                                    </div>
+                                                </div>
+
+                                        </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container-up d-none" id="edit_popup_<?php echo $row['id']; ?>">
+                                <div class="row w-70">
+                                    <div class="box box-success popup" style="width: 100%;">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Reject details</h3>
+                                            <small onclick="edit_close(<?php echo $row['id']; ?>)"
+                                                class="btn btn-sm btn-success pull-right"><i
+                                                    class="fa fa-times"></i></small>
+                                            <i class="fa fa-times"></i>
+                                            </small>
+                                        </div>
+                                        <div class="box-body d-block">
+                                            <form method="POST" action="reject_grn_order.php">
+                                                <div class="row" style="display: block;">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>note</label>
+                                                            <input type="text" name="note" class="form-control"
+                                                                value="" required>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="emp_id" value="<?php echo $u_id ?>">
                                                         <input type="hidden" name="id"
                                                             value="<?php echo $row['id']; ?>">
 
@@ -531,6 +581,13 @@ $invo = $_GET['id'];
         }
     }
 
+    function confirmApp2(id) {
+        if (confirm('Are you sure you want to Approve this item?')) {
+            // Redirect to a PHP page that handles the deletion
+            window.location.href = 'purchase_order_stores_approve.php?id=' + id;
+        }
+    }
+
     function pro_select() {
         let productId = $('#p_sel').val();
 
@@ -586,9 +643,15 @@ $invo = $_GET['id'];
         $("#edit_popup_" + i).removeClass("d-none");
     }
 
+    function edit_note2(i) {
+        //  $(".popup").addClass("d-none");
+        $("#edit_popup_2" + i).removeClass("d-none");
+    }
+
     function edit_close(i) {
         //  $(".popup").addClass("d-none");
         $("#edit_popup_" + i).addClass("d-none");
+        $("#edit_popup_2" + i).addClass("d-none");
     }
     </script>
 
