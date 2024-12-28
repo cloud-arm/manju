@@ -48,7 +48,7 @@ $_SESSION['SESS_FORM'] = 'company';
                                 </li>
                             </ul>
 
-                            <a href="cus_view.php" class="btn btn-primary btn-block m-0"><b>Back</b></a>
+                            <a href="branch.php" class="btn btn-primary btn-block m-0"><b>Back</b></a>
                         </div>
                         <!-- /.box-body -->
                     </div>

@@ -44,8 +44,8 @@ $user_level = $_SESSION['USER_LEWAL'];
                     <div class="info-box">
                         <span class="info-box-icon"><i class="fa fa-file-text"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">JOB COUNT</span>
-                            <span class="info-box-number"><?php echo $tot_job=select_item('visit','COUNT(id)',''); ?></span>
+                            <span class="info-box-text">PURCHASE</span>
+                            <span class="info-box-number">0</span>
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
                             </div>
@@ -62,14 +62,12 @@ $user_level = $_SESSION['USER_LEWAL'];
                     <div class="info-box">
                         <span class="info-box-icon"><i class="fa fa-building"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">CORPORATE</span>
-                            <span class="info-box-number"><?php echo $cop_job=select_item('visit','COUNT(id)',"action < 5 AND customer_type = 'corporate' "); ?></span>
+                            <span class="info-box-text">BRANCH</span>
+                            <span class="info-box-number">0</span>
                             <div class="progress">
-                                <div class="progress-bar" style="width: <?php echo ($cop_job/$tot_job)*100 ?>%"></div>
+                                
                             </div>
-                            <span class="progress-description">
-                            Percentage of corporate jobs (<?php echo number_format(($cop_job/$tot_job)*100,2); ?>%)
-                            </span>
+                            
                         </div>
 
                     </div>
@@ -81,13 +79,11 @@ $user_level = $_SESSION['USER_LEWAL'];
                         <span class="info-box-icon"><i class="fa fa-shopping-cart"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">RETAIL</span>
-                            <span class="info-box-number"><?php echo $ret_job=select_item('job','COUNT(id)',"action < 5 AND customer_type = 'retail' "); ?></span>
+                            <span class="info-box-number">0</span>
                             <div class="progress">
-                                <div class="progress-bar" style="width: <?php echo ($ret_job/$tot_job)*100 ?>%"></div>
+                                
                             </div>
-                            <span class="progress-description">
-                            Percentage of retail jobs (<?php echo number_format(($ret_job/$tot_job)*100,2) ?>%)
-                            </span>
+                            
                         </div>
 
                     </div>
@@ -100,43 +96,7 @@ $user_level = $_SESSION['USER_LEWAL'];
   
 
             <div class="box">
-    <div class="box-header">
-        <div class="row">
-            <div class="col-md-9">
-                <h3 class="box-title">JOB LIST</h3>
-            </div>
-            <a href="add_job.php">
-                            <button id="index_view" class="btn btn-sm btn-info">Add visit</button>
-
-                        </a>        
-                        
-                        <button onclick="click_open(1)" class="btn btn-primary btn-bg mx-2">Add job</button>
-
-        </div>
-
-
-
-        <!-- Search Bar -->
-        <?php if($user_level != 5){ ?>
-<div class="row mt-2">
-    <small>
-        <form method="get">
-            <div class="col-md-2">
-                <select name="type" id="type" class="form-control select2">
-                    <option value="all" <?= (!isset($_GET['type']) || $_GET['type'] == 'all') ? 'selected' : ''; ?>>All</option>
-                    <option value="corporate" <?= (isset($_GET['type']) && $_GET['type'] == 'corporate') ? 'selected' : ''; ?>>Corporate</option>
-                    <option value="retail" <?= (isset($_GET['type']) && $_GET['type'] == 'retail') ? 'selected' : ''; ?>>Retail</option>
-                </select>
-            </div>
-            <div class="col-md-1">
-                <input type="submit" id="filt2" value="Filter job type" class="btn btn-primary">
-            </div>
-        </form>
-    </small>
-</div>
-<?php }?>
-
-    </div>
+   
 
     <!-- Job List Table -->
     <div class="box-body">
@@ -155,219 +115,7 @@ $user_level = $_SESSION['USER_LEWAL'];
 
                 </tr>
             </thead>
-            <tbody>
-            <?php
-                if ($user_level != 5) {
-                    // For non-level 5 users, show all jobs or filter by customer type
-                    
-                    if (!isset($_GET['type']) ) {
-                        $result = select('job', '*',"customer_type='corporate' AND status != 'finish' ");
-                    } else{
-                        $result = select('job', '*', "customer_type='" . $_GET['type'] . "' AND status != 'finish' ");
-                        if($_GET['type'] == 'all') {
-                            $result = select('job', '*'," status != 'finish'");
-                        }
-                    }
-                    
-                } else if ($user_level == 5) {
-                    // For level 5 users, default to showing retail jobs
-                    if (!isset($_GET['type']) || $_GET['type'] == 'retail') {
-                        // If no type is set or type is 'retail', show retail jobs
-                        $result = select('job', '*', "customer_type='retail' AND status != 'finish'");
-                    } else {
-                        // In case someone manually tries to set another type, force retail jobs
-                        $result = select('job', '*', "customer_type='retail' AND status != 'finish'");
-                    }
-                }
-
-                for ($i = 0; $row = $result->fetch(); $i++) {
-                    $id = $row['id'];
-                    $dll = $row['dll'];
-
-                    if ($dll != 1) {
-                ?>
-                <tr>
-                    <td><?php echo $row['id']; ?></td>
-                    <td>
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <span><?php echo $row['all_job_no']; ?></span>
-                            <div align="center">
-                                <?php 
-                                    if ($row['customer_type'] == 'corporate') {
-                                        echo '<div class="badge bg-blue"><i class="fas fa-building"></i>';
-                                    } elseif ($row['customer_type'] == 'retail') {
-                                        echo '<div class="badge bg-yellow"><i class="fas fa-shopping-cart"></i>';
-                                    }
-                                ?>
-                            </div>
-                            <br>
-                        </div> 
-                    </td>
-                    <td><?php echo $row['name']; ?></td>
-                    <td>
-                        <?php
-                        $r = select('job_location', '*', 'job_id=' . $id);
-
-                        while ($locationRow = $r->fetch()) {
-                        ?>
-                        <div align="center">
-                            <div class="badge bg-green">
-                                <i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>
-                                <?php echo $locationRow['name']; ?>
-                            </div>
-                            <br>
-                        </div>
-                        <?php } ?>
-                    </td>
-                    <td><?php echo $row['date']; ?></td>
- 
-
-                    <td>
-                        <?php if ($row['status'] == 'running') { ?>
-                        <div align="center">
-
-                        <?php if($row['action'] == 5){ ?>
-                            <div class="badge bg-yellow">
-                                <?php }else{ ?>
-                                    <div class="badge bg-blue">
-                            <?php } ?>
-                                <i class="fas fa-circle-o-notch fa-spin icon " style="margin-right: 5px;"></i>
-                                <?php echo $row['status']; ?>
-                            </div>
-                        </div>
-                        <?php } elseif ($row['status'] == 'pending') { ?>
-                        <div align="center">
-                            <div class="badge bg-blue" >
-                                <i class="fas fa-wrench" style="margin-right: 5px;"></i>
-                                <?php echo $row['status']; ?>
-                            </div>
-                        </div>
-                        <?php } ?>
-                    </td>
-                    <td>
-                        <?php
-                        // Define status weights
-                        $statusWeights = [
-                            'measure' => 0,
-                            'artwork' => 1,
-                            'on_aprove' => 2,
-                            'printing' => 3,
-                            'fix' => 4,
-                            'complete' => 5
-                        ];
-
-                        // Count total jobs for the job_no
-                        $countQuery = query("SELECT COUNT(id) FROM sales_list WHERE job_no = '$id' ");
-                        $totalJobs = $countQuery->fetchColumn();
-
-
-
-                        // Ensure we have jobs under the job_no
-                        if ($totalJobs > 0) {
-                            // Count jobs by status for the job_no
-                            $statusQuery = query("SELECT status, COUNT(id) as job_count FROM sales_list WHERE job_no = '$id' GROUP BY status");
-                            
-                            $totalProgress = 0;
-
-                            // Loop through statuses and calculate total progress
-                            while ($statusRow = $statusQuery->fetch(PDO::FETCH_ASSOC)) {
-                                $status = $statusRow['status'];
-                                $jobCount = $statusRow['job_count'];
-
-                                // Multiply job count by the weight for the status
-                                if (isset($statusWeights[$status])) {
-                                    $totalProgress += $jobCount * $statusWeights[$status];
-                                }
-                            }
-
-                            // Calculate the maximum possible score (each job can have a weight up to 5)
-                            $maxScore = $totalJobs * 5;
-
-                            // Calculate the progress percentage
-                            if ($maxScore > 0) {
-                                $progressPercentage = ($totalProgress / $maxScore) * 100;
-                            } else {
-                                $progressPercentage = 0;
-                            }
-
-                             // Display the progress percentage and the progress bar
-                           //  echo '<div style="margin-bottom: 10px; font-weight: bold; color: #333;">Progress: ' . round($progressPercentage, 2) . '%</div>';
-
-                            // Display a more stylish progress bar with transition effects
-                            echo '<div style="width: 100%; background-color: #e0e0e0; border-radius: 25px; height: 25px; position: relative; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden;">';
-
-                            // Inner progress bar
-                            echo '<div style="width: ' . $progressPercentage . '%; background-color: #76c7c0; height: 100%; border-radius: 25px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; transition: width 0.4s ease;">';
-                            echo round($progressPercentage, 2) . '%'; // Show percentage inside the bar
-                            echo '</div>';
-
-                            // Optional: Add a tooltip for more detailed progress information
-                            echo '<div style="position: absolute; top: -30px; left: ' . ($progressPercentage - 10) . '%; background-color: #333; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; white-space: nowrap; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">';
-                            echo 'Current Progress: ' . round($progressPercentage, 2) . '%';
-                            echo '</div>';
-
-                            echo '</div>';
-                            } else {
-                                // No jobs found for the job_no
-                                echo '<div style="color: #ff0000; font-weight: bold;">No jobs available.</div>';
-                            }
-
-                        ?>
-                    </td>
-
-
-
-
-                    <td>
-                        <a href="job_view?id=<?php echo base64_encode($row['id']); ?>">
-                            <button id="index_view" class="btn btn-sm btn-info">View</button>
-                        </a>
-                        <?php if ($user_level == 1): ?>
-                        <a class="btn btn-sm btn-danger" onclick="confirmDelete(<?php echo $row['id']; ?>)">Delete</a>
-                        <button onclick="click_open('edit', <?php echo $row['id']; ?>)" class="btn btn-sm btn-warning">Edit</button>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-
-                <!-- Edit Popup for each job -->
-                <div class="container-up d-none" id="edit_popup_<?php echo $id; ?>">
-                    <div class="row justify-content-center">
-                        <div class="box box-success popup" style="width: 180%; max-width: 800px;">
-                            <div class="box-header with-border d-flex justify-content-between align-items-center">
-                                <h3 class="box-title">Edit Job: <?php echo $row['id']; ?></h3>
-                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="click_close('<?php echo $id; ?>')">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="box-body">
-                                <form method="POST" action="edit_job.php">
-                                    <div class="form-group mb-4">
-                                        <label for="job-number">Job Number</label>
-                                        <input type="text" name="all_job_no" id="job-number" class="form-control" 
-                                            value="<?php echo $row['all_job_no']; ?>" placeholder="Enter job number" required>
-                                    </div>
-
-                                    <div class="form-group mb-4">
-                                        <label for="note">Note</label>
-                                        <textarea name="note" id="note_edit" class="form-control" cols="30" rows="5" 
-                                                placeholder="Enter any notes about the job"><?php echo $row['note']; ?></textarea>
-                                    </div>
-
-                                    <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                    <input type="hidden" name="id2" value="0">
-
-                                    <div class="d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary mr-2">Save</button>
-                                        <button type="button" class="btn btn-secondary" onclick="click_close('<?php echo $id; ?>')">Cancel</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php } ?>
-                <?php } ?>
-            </tbody>
+            
         </table>
     </div>
 </div>
@@ -377,79 +125,7 @@ $user_level = $_SESSION['USER_LEWAL'];
 
 
         <!-- Add New Job Popup -->
-        <div class="container-up d-none" id="add_job_popup">
-            <div class="row w-70">
-                <div class="box box-success popup" style="width: 50%;">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Add New Job</h3>
-                        <small onclick="click_close('add')" class="btn btn-sm btn-success pull-right">
-                            <i class="fa fa-times"></i>
-                        </small>
-                    </div>
-
-                <div class="box-body d-block">
-                    <form method="POST" action="save/job/job_save.php">
-
-                        <div class="row" style="display: block;">
-
-
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Company</label>
-                                    <select class="form-control select2 "
-                                        name="company_id" style="width: 100%;" autofocus>
-                                        <?php 
-                                        if($user_level == 5){
-                                            $result=select('company','*',"type='retail' ");
-                                        }else{
-                                            $result=select('company','*');
-                                        }
-                                         
-                                        for ($i = 0; $row = $result->fetch(); $i++) {  ?>
-                                        <option value="<?php echo $row['id']  ?>"><?php echo $row['name']  ?></option>
-                                        <?php } ?>
-
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-10">
-                                <div class="form-group">
-                                    <label>Note</label>
-                                    <textarea name="note" id="note_job" cols="70" rows="10" class="form-control"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Job no</label>
-                                    <input type="number" class="form-control" name="all_job_no" id="all_job_no" style="width: 100%;" >
-                                </div>
-                            </div>
-
-                           
-
-                            
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <input type="hidden" name="unit" value="1">
-                                    <input type="hidden" name="id2" value="1">
-
-                                    <input type="submit"  style="margin-top: 23px; width: 100%;" id="u1" value="Save"
-                                        class="btn btn-info btn-sm pull-right">
-                                </div>
-                            </div>
-
-
-                        </div>
-
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+        
     <!-- /.content-wrapper -->
 
     <?php include("dounbr.php"); ?>
