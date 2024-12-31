@@ -349,11 +349,11 @@ $_SESSION['SESS_FORM'] = 'index';
                         <div class="row mt-3 align-items-center box-body">
                             <div class="col-md-6">
                             <?php if($reject == "approve" && $act >= 2) {?>
-                                    <h5 class="timeline-header font-weight-bold">This Purchase Order Approve By Sales Manager:</h5>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order Approve By Sales coordinator:</h5>
                                 <?php }elseif($reject == "reject"  && $act == 1){ ?>
-                                    <h5 class="timeline-header font-weight-bold">This Purchase Order Reject By Sales Manager:</h5>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order Reject By Sales coordinator:</h5>
                                 <?php }else { ?>
-                                    <h5 class="timeline-header font-weight-bold">This Purchase Order is waiting for Sales Manager Approval:</h5>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order is waiting for Sales coordinator Approval:</h5>
                                <?php } ?>
                             </div>
 
@@ -461,7 +461,7 @@ $_SESSION['SESS_FORM'] = 'index';
                                 <?php }elseif($reject == "reject" && $act == 2){ ?>
                                     <h5 class="timeline-header font-weight-bold">This Purchase Order Reject By Accountant:</h5>
                                 <?php }else { ?>
-                                    <h5 class="timeline-header font-weight-bold">This Purchase Order is waiting for Sales Manager Approval:</h5>
+                                    <h5 class="timeline-header font-weight-bold">This Purchase Order is waiting for Accountant Approval:</h5>
                                <?php } ?>
                             </div>
 
@@ -584,6 +584,18 @@ $_SESSION['SESS_FORM'] = 'index';
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <?php endif; ?>
+                                    <?php 
+                                        $result = query("SELECT COUNT(*) AS emi_count FROM imi_no WHERE purchase_list_id = '$id'");
+                                        for ($i = 0; $r01 = $result->fetch(); $i++) {
+                                            $count = $r01['emi_count'];
+                                        }
+                                    ?>
+                                    <?php if($approved == 2 && $count != $qty) { ?>
+                                        <a class="btn btn-danger" href="emi_add.php?id=<?php echo $row['id']; ?>">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+
+                                    <?php } ?>
                                     <?php endif; ?>
 
                                 </td>
@@ -694,6 +706,86 @@ $_SESSION['SESS_FORM'] = 'index';
                                             </table>
                                         </div>
                     </div>
+                </li>
+                <?php } ?>
+
+                <?php if ($status_id >= 4){ ?>
+                    <li>
+                    <i class="fa fa-check-circle bg-green"></i>
+                    <div class="timeline-item p-3 bg-light rounded shadow-sm">
+                        <span class="time text-muted"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                        <h3 class="timeline-header"><a href="#" class="text-primary">GRI Order Details</a></h3>
+
+                        <?php 
+                            $invo = $_GET['id'];
+                            $result = query("SELECT SUM(qty) FROM purchases_list WHERE invoice_no = '$invo' AND approve != 20");
+                            for ($i = 0; $r01 = $result->fetch(); $i++) {
+                                $sum = $r01['SUM(qty)'];
+                            }
+
+                            $imi_count = 0;
+                            $result = query("SELECT * FROM purchases_list WHERE invoice_no = '$invo'");
+                            for ($i = 0; $r01 = $result->fetch(); $i++) {
+                                $p_id = $r01['id'];
+                                $result1 = query("SELECT COUNT(*) AS imi_count FROM imi_no WHERE purchase_list_id = '$p_id'");
+                                for ($i = 0; $r02 = $result1->fetch(); $i++) {
+                                    $imi_count += $r02['imi_count'];
+                                }
+                            }
+                        ?> 
+                        <?php if ($sum == $imi_count){ ?>
+                            <form method="POST" action="gri_create.php">
+                                <div class="row mt-3 align-items-center  box-body">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Driver List</label>
+                                            <select class="form-control select2" name="driver_id" style="width: 100%;" required>
+                                                <?php
+                                                    $result = query("SELECT * FROM employee");
+                                                    while ($row = $result->fetch()) {
+                                                ?>
+                                                <option value="<?php echo $row['id']; ?>">
+                                                    <?php echo $row['name']; ?>
+                                                </option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                    <div class="form-group">
+                                            <label>Vehicle List</label>
+                                            <select class="form-control select2" name="vehicle_id" style="width: 100%;" required>
+                                                <?php
+                                                    $result = query("SELECT * FROM vehicle");
+                                                    while ($row = $result->fetch()) {
+                                                ?>
+                                                <option value="<?php echo $row['id']; ?>">
+                                                    <?php echo $row['vehicle_no']; ?>
+                                                </option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                    <input type="hidden" name="invoice_id" value="<?php echo $_GET['id']; ?>">
+                                    <?php if ($user_level == 4): ?>
+                                    <input type="submit" style="margin-top: 23px; width: 100%;"
+                                    value="Create GRI" class="btn btn-info btn-sm">
+                                    <?php endif; ?>
+                                    </div>
+                                </div>
+                            </form>
+                        <?php }else{ ?>
+                            <div class="row mt-3 align-items-center  box-body">
+                                <div class="col-md-12">
+                                    <h5 class="timeline-header font-weight-bold" style="color: red;"> This order does not match the IMI number count. </h5>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
+
                 </li>
                 <?php } ?>
 
