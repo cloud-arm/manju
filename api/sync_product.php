@@ -8,25 +8,27 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 
 // Retrieve the transaction ID from the POST data
-$id = $_POST['id'] ?? null;
 
-if ($id === null) {
+
+if (!isset($_POST['id'])) {
     echo json_encode(array("message" => "Error: Missing parameters."));
     exit();
-}
-
-try {
-    // Prepare and execute the SQL query
-    $result = query("SELECT product_code, product_name, price, qty, id FROM products WHERE id > '$id' ",'../');
-
-    // Fetch the results and create an array
-    $result_array = array();
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        $result_array[] = $row;
+}else{
+    $id = $_POST['id'];
+    try {
+        // Prepare and execute the SQL query
+        $result = query("SELECT product_code, product_name, price, qty, id FROM products WHERE id > '$id' ",'../');
+    
+        // Fetch the results and create an array
+        $result_array = array();
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            $result_array[] = $row;
+        }
+    
+        // Encode the array into JSON and output it
+        echo json_encode($result_array);
+    } catch (PDOException $e) {
+        echo json_encode(array("message" => "Error: " . $e->getMessage()));
     }
-
-    // Encode the array into JSON and output it
-    echo json_encode($result_array);
-} catch (PDOException $e) {
-    echo json_encode(array("message" => "Error: " . $e->getMessage()));
 }
+
