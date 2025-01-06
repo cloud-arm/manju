@@ -1,7 +1,6 @@
 <?php
 session_start();
-include('../../connect.php');
-include('../../config.php');
+include('../config.php');
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET");
@@ -18,7 +17,7 @@ if ($id === null) {
 
 try {
     // Prepare and execute the SQL query
-    $result = query("SELECT product_code, product_name, price, qty, id FROM products WHERE id > '$id' ");
+    $result = query("SELECT product_code, product_name, price, qty, id FROM products WHERE id > '$id' ",'../');
 
     // Fetch the results and create an array
     $result_array = array();
