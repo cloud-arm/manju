@@ -18,7 +18,7 @@ if ($id === null) {
 
 try {
     // Prepare and execute the SQL query
-    $result = query("SELECT products AS product_code, product_name, price, qty, id FROM products WHERE id > '$id' ");
+    $result = query("SELECT product_code, product_name, price, qty, id FROM products WHERE id > '$id' ");
 
     // Fetch the results and create an array
     $result_array = array();
