@@ -41,7 +41,7 @@ foreach ($visit_list as $list) {
 
             //checking duplicate
             $con = 0;
-            $result = query("SELECT * FROM visit WHERE app_id = '$app_id'",'../');
+            $result = query("SELECT * FROM visit WHERE app_id = '$app_id' AND emp_id = '$emp_id'",'../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $con = $row['id'];
             }
