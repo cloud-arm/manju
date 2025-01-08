@@ -7,7 +7,6 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-
 // get json data
 $json_data = file_get_contents('php://input');
 
@@ -36,7 +35,7 @@ foreach ($sales_list as $list) {
     $sync_date = date('Y-m-d');
     $sync_time = date('H:i:s');
 
-    $invoice_no = $mpo_id . date('Ymd_His');
+    $invoice_no = $mpo_id . date('YmdHis');
 
         //------------------------------------------------------------------------------//
         try {
