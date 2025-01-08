@@ -29,6 +29,7 @@ foreach ($sales_list as $list) {
     $balance = $list['balance'];
     $nic = $list['nic'];
     $mpo_id = $list['mpo_id'];
+    $card_number = $list['card_number'];
 
     $app_id = $list['id'];
 
@@ -39,7 +40,6 @@ foreach ($sales_list as $list) {
 
         //------------------------------------------------------------------------------//
         try {
-
             //checking duplicate
             $con = 0;
             $result = query("SELECT * FROM sales WHERE imi_number = '$imi_number'",'../../');
@@ -47,12 +47,24 @@ foreach ($sales_list as $list) {
                 $con = $row['id'];
             }
 
+            //get the branch id from mpo id
+            $result = query("SELECT branch_id,name FROM employee WHERE id = '$mpo_id'",'../../');
+            for ($i = 0; $row = $result->fetch(); $i++) {
+                $branch_id = $row['branch_id'];
+                $mpo_name = $row['name'];
+            }
+
+            $result = query("SELECT product_name FROM products WHERE id = '$product_id'",'../../');
+            for ($i = 0; $row = $result->fetch(); $i++) {
+                $product_name = $row['product_name'];
+            }
+
             if ($con == 0) {
 
                 // insert query
-                $sql = "INSERT INTO sales (product_id,imi_number,tech_id,pay_type,date,time,amount,down_payment,balance,nic,app_id,sync_date,sync_time,invoice_no,mpo_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO sales (product_id,imi_number,tech_id,pay_type,date,time,amount,down_payment,balance,nic,app_id,sync_date,sync_time,invoice_no,mpo_id,branch_id,mpo_name,product_name,card_number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($product_id, $imi_number, $tech_id, $pay_type, $date, $time, $amount, $down_payment, $balance, $nic, $app_id, $sync_date, $sync_time, $invoice_no, $mpo_id));
+                $ql->execute(array($product_id, $imi_number, $tech_id, $pay_type, $date, $time, $amount, $down_payment, $balance, $nic, $app_id, $sync_date, $sync_time, $invoice_no, $mpo_id, $branch_id, $mpo_name, $product_name, $card_number));
 
                 $sql1 = "UPDATE branch_stock  SET qty = qty - ? WHERE product_id = ?";
                 $q = $db->prepare($sql1);
@@ -63,9 +75,9 @@ foreach ($sales_list as $list) {
                 $ql->execute(array($pay_type, $amount, $date, $time, $invoice_no, $balance, $down_payment));
 
                 if ($pay_type == "Credit") {
-                    $sql3 = "INSERT INTO credit (credit_amount, schedule_date) VALUES (?,?)";
+                    $sql3 = "INSERT INTO credit (credit_amount, schedule_date, invoice_no) VALUES (?,?,?,?)";
                 $ql = $db->prepare($sql3);
-                $ql->execute(array($balance, ''));
+                $ql->execute(array($balance, '', $invoice_no, $branch_id));
                 }
             }
 

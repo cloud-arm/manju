@@ -46,12 +46,18 @@ foreach ($visit_list as $list) {
                 $con = $row['id'];
             }
 
-            if ($con == 0) {
+            //get the branch id from mpo id
+            $result = query("SELECT branch_id,name FROM employee WHERE id = '$emp_id'",'../../');
+            for ($i = 0; $row = $result->fetch(); $i++) {
+                $branch_id = $row['branch_id'];
+                $emp_name = $row['name'];
+            }
 
+            if ($con == 0) {
                 // insert query
-                $sql = "INSERT INTO visit (emp_id,name,address,phone,nic,tds_value,schedule_date,positive,date,time,product_id,app_id,sync_date,sync_time) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO visit (emp_id,name,address,phone,nic,tds_value,schedule_date,positive,date,time,product_id,app_id,sync_date,sync_time,branch_id,employee) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($emp_id, $name, $address, $phone, $nic, $tds_value, $schedule_date, $positive, $date, $time, $product_id, $app_id, $sync_date, $sync_time));
+                $ql->execute(array($emp_id, $name, $address, $phone, $nic, $tds_value, $schedule_date, $positive, $date, $time, $product_id, $app_id, $sync_date, $sync_time, $branch_id, $emp_name));
             }
 
             // get sales list id
