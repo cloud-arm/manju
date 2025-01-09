@@ -54,8 +54,8 @@ foreach ($sales_list as $list) {
                 $mpo_name = $row['name'];
             }
 
-            $result = query("SELECT product_name FROM products WHERE id = '$product_id'",'../../');
-            for ($i = 0; $row = $result->fetch(); $i++) {
+            $result1 = query("SELECT product_name FROM products WHERE id = '$product_id'",'../../');
+            for ($i = 0; $row = $result1->fetch(); $i++) {
                 $product_name = $row['product_name'];
             }
 
