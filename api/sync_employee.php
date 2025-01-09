@@ -15,6 +15,7 @@ if (!isset($_POST['emp_id'])) {
     exit();
 }else{
     $id = $_POST['emp_id'];
+    $id = $_POST['cloud_id'];
     try {
         // get the branch id of given mpo
         $result = query("SELECT branch_id FROM employee WHERE id = '$id' ",'../');
@@ -22,7 +23,7 @@ if (!isset($_POST['emp_id'])) {
              $branch_id = $row['branch_id'];
             }
         // Prepare and execute the SQL query
-        $result = query("SELECT id, name, des FROM employee WHERE branch_id = '$branch_id' ",'../');
+        $result = query("SELECT id, name, des FROM employee WHERE branch_id = '$branch_id' AND id > '$id' ",'../');
     
         // Fetch the results and create an array
         $result_array = array();
