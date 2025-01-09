@@ -115,6 +115,7 @@ foreach ($sales_list as $list) {
                 "cloud_id" => 0,
                 "app_id" => 0,
                 "invoice_no" => 0,
+                "customer_name" => '',
                 "status" => "failed",
                 "message" => $e->getMessage(),
             );
