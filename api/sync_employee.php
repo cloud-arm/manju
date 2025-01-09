@@ -14,11 +14,11 @@ if (!isset($_POST['emp_id'])) {
     echo json_encode(array("message" => "Error: Missing parameters."));
     exit();
 }else{
-    $id = $_POST['emp_id'];
+    $emp_id = $_POST['emp_id'];
     $id = $_POST['cloud_id'];
     try {
         // get the branch id of given mpo
-        $result = query("SELECT branch_id FROM employee WHERE id = '$id' ",'../');
+        $result = query("SELECT branch_id FROM employee WHERE id = '$emp_id' ",'../');
         for ($i = 0; $row = $result->fetch(); $i++) {
              $branch_id = $row['branch_id'];
             }
