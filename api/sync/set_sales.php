@@ -54,12 +54,6 @@ foreach ($sales_list as $list) {
                 $mpo_name = $row['name'];
             }
 
-            //get the customer Name
-            $result = query("SELECT name FROM visit WHERE nic = '$nic'",'../../');
-            for ($i = 0; $row = $result->fetch(); $i++) {
-                $customer_name = $row['name'];
-            }
-
             $result = query("SELECT product_name FROM products WHERE id = '$product_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $product_name = $row['product_name'];
@@ -68,9 +62,9 @@ foreach ($sales_list as $list) {
             if ($con == 0) {
 
                 // insert query
-                $sql = "INSERT INTO sales (product_id,imi_number,tech_id,pay_type,date,time,amount,down_payment,balance,nic,app_id,sync_date,sync_time,invoice_no,mpo_id,branch_id,mpo_name,product_name,card_number,customer_name) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO sales (product_id,imi_number,tech_id,pay_type,date,time,amount,down_payment,balance,nic,app_id,sync_date,sync_time,invoice_no,mpo_id,branch_id,mpo_name,product_name,card_number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($product_id, $imi_number, $tech_id, $pay_type, $date, $time, $amount, $down_payment, $balance, $nic, $app_id, $sync_date, $sync_time, $invoice_no, $mpo_id, $branch_id, $mpo_name, $product_name, $card_number,$customer_name));
+                $ql->execute(array($product_id, $imi_number, $tech_id, $pay_type, $date, $time, $amount, $down_payment, $balance, $nic, $app_id, $sync_date, $sync_time, $invoice_no, $mpo_id, $branch_id, $mpo_name, $product_name, $card_number));
 
                 $sql1 = "UPDATE branch_stock  SET qty = qty - ? WHERE product_id = ?";
                 $q = $db->prepare($sql1);
@@ -93,7 +87,6 @@ foreach ($sales_list as $list) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];
                 $invo = $row['invoice_no'];
-                $cus = $row['customer_name'];
             }
 
             // create success respond 
@@ -101,7 +94,6 @@ foreach ($sales_list as $list) {
                 "cloud_id" => $id,
                 "app_id" => $ap_id,
                 "invoice_no" => $invo,
-                "customer_name" => $cus,
                 "status" => "success",
                 "message" => "",
             );
@@ -115,7 +107,6 @@ foreach ($sales_list as $list) {
                 "cloud_id" => 0,
                 "app_id" => 0,
                 "invoice_no" => 0,
-                "customer_name" => '',
                 "status" => "failed",
                 "message" => $e->getMessage(),
             );
