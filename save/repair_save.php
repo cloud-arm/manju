@@ -9,6 +9,11 @@ echo "<br>";
 echo $re_type=$_POST['re_type']; 
 echo "<br>";
 echo $value=$_POST['value']; 
+
+echo "<br>";
+
+echo $id = $_POST['id2'];
+
 echo "<br>";
 
 $type_name=select_item('repair_type','name','id='.$re_type,'../');
@@ -32,6 +37,6 @@ $result=insert("repair", $insertData,'../');
 
 
 //print_r( $result);
-header("location: ../repire.php");
+header("location: ../repire.php?id=".$id);
 
 ?>

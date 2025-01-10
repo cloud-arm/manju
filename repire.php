@@ -82,12 +82,13 @@ if (isset($_GET['id'])) {
                                         </div>
 
                                         
-
                                         
 
                                         <div class="col-md-2" style="height: 75px;display: flex; align-items: end;">
                                             <div class="form-group">
                                                 <input type="hidden" name="id" value="0">
+                                                <input type="hidden" name="id2" value="<?php echo $id; ?>" >
+
                                                 <input type="submit" value="Save" class="btn btn-success">
                                             </div>
                                         </div>
