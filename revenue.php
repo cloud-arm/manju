@@ -167,7 +167,7 @@ $user_level = $_SESSION['USER_LEWAL'];
                 <!-- Edit Popup for each job -->
                 <div class="container-up d-none" id="edit_popup_<?php echo $id; ?>">
                     <div class="row justify-content-center">
-                        <div class="box box-success popup" style="width: 180%; max-width: 800px;">
+                        <div class="box box-success popup" style="width: 280%; max-width: 800px;">
                             <div class="box-header with-border d-flex justify-content-between align-items-center">
                                 <h3 class="box-title">Revenue: <?php echo $row['id']; ?></h3>
                                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="click_close('<?php echo $id; ?>')">
@@ -176,13 +176,13 @@ $user_level = $_SESSION['USER_LEWAL'];
                             </div>
                             <div class="box-body">
                                 <form method="POST" action="edit/revenue_edit.php?id=<?php echo $id; ?>">
-                                    <div class="form-group mb-4">
+                                    <div class="form-group mb-6">
                                         <label for="job-number">Insurance Expire date</label>
                                         <input type="text" name="ins" id="datepicker1" class="form-control" 
                                             value="<?php echo $row['insurance_date']; ?>" required>
                                     </div>
 
-                                    <div class="form-group mb-4">
+                                    <div class="form-group mb-6">
                                         <label for="job-number">License Expire date</label>
                                         <input type="text" name="lice" id="datepicker1" class="form-control" 
                                             value="<?php echo $row['licence_date']; ?>" required>
@@ -195,7 +195,6 @@ $user_level = $_SESSION['USER_LEWAL'];
 
                                     <div class="d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary mr-2">Save</button>
-                                        <button type="button" class="btn btn-secondary" onclick="click_close('<?php echo $id; ?>')">Cancel</button>
                                     </div>
                                 </form>
                             </div>
