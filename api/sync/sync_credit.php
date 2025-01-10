@@ -19,8 +19,12 @@ if (!isset($_POST['id'])) {
     
         // Fetch the results and create an array
         $result_array = array();
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $result_array[] = $row;
+        if ($result instanceof PDOStatement) {
+            if ($result->rowCount() > 0) {
+                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                    $result_array[] = $row;
+                }
+            }
         }
     
         // Encode the array into JSON and output it
