@@ -122,7 +122,7 @@ if (isset($_GET['id'])) {
 
                                     <?php
 
-                                    $result = select_query("SELECT * FROM repair WHERE number='$number' ORDER BY id DESC");
+                                    $result = query("SELECT * FROM repair WHERE number='$number' ORDER BY id DESC");
                                     for ($i = 0; $row = $result->fetch(); $i++) {  ?>
 
                                         <tr class="record">
