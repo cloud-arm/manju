@@ -140,7 +140,7 @@ $user_level = $_SESSION['USER_LEWAL'];
             <td><?php echo $id = $row['id']; ?></td>
             <td>
                 <div class='d-flex align-items-center'>
-                    <label for='$day' class='badge bg-green'><?php echo $row['number']; ?></label>
+                    <label for='$day' class='badge bg-blue'><?php echo $row['number']; ?></label>
                 </div>
             </td>
             <td><?php echo $row['type_name']; ?></td>

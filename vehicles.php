@@ -138,105 +138,80 @@ $user_level = $_SESSION['USER_LEWAL'];
                 </tr>
             </thead>
             <tbody>
-            <?php
-                if ($user_level != 5) {
-                    // For non-level 5 users, show all jobs or filter by customer type
-                    
-                    if (!isset($_GET['type']) ) {
-                        $result = select('vehicles');
-                    } else{
-                        $result = select('vehicles');
-                        if($_GET['type'] == 'all') {
-                            $result = select('vehicles');
-                        }
-                    }
-                    
-                } else if ($user_level == 5) {
-                    // For level 5 users, default to showing retail jobs
-                    if (!isset($_GET['type']) || $_GET['type'] == 'retail') {
-                        // If no type is set or type is 'retail', show retail jobs
-                        $result = select('vehicles', '*');
-                    } else {
-                        // In case someone manually tries to set another type, force retail jobs
-                        $result = select('vehicles', '*');
-                    }
-                }
+<?php
+if ($user_level != 5) {
+    // For non-level 5 users, show all jobs or filter by customer type
+    $result = isset($_GET['type']) && $_GET['type'] !== 'all' 
+        ? select('vehicles') 
+        : select('vehicles');
+} else {
+    // For level 5 users, default to showing retail jobs
+    $result = (!isset($_GET['type']) || $_GET['type'] == 'retail') 
+        ? select('vehicles', '*') 
+        : select('vehicles', '*');
+}
 
-                for ($i = 0; $row = $result->fetch(); $i++) {
+// Current date for comparison
+$current_date = new DateTime();
 
+for ($i = 0; $row = $result->fetch(); $i++) {
+    // Parse dates for insurance and licence
+    $insurance_date = new DateTime($row['insurance_date']);
+    $licence_date = new DateTime($row['licence_date']);
 
-                ?>
-                <tr>
-                    <td><?php echo $row['id']; ?></td>
-  
-                    <td>
-                    <div class='d-flex align-items-center'>
-                                             <label for='$day' class='badge bg-green'><?php echo $row['number']; ?></label>
-                                    </div>
-                        </td>
+    // Calculate date differences
+    $insurance_diff = $current_date->diff($insurance_date)->format('%r%a'); // Days difference
+    $licence_diff = $current_date->diff($licence_date)->format('%r%a'); // Days difference
 
-                    <td><?php echo $row['type_name']; ?></td>
+    // Determine CSS class for insurance date
+    $insurance_class = $insurance_diff <= 30 && $insurance_diff <= 0 
+        ? 'bg-red' 
+        : ($insurance_diff <= 60 && $insurance_diff > 30 
+            ? 'bg-warning' 
+            : ($insurance_diff > 0 ? 'bg-green' : ''));
 
-                    <td><?php echo $row['brand']; ?></td>
-                    <td><?php echo $row['insurance_date']; ?></td>
-                    <td><?php echo $row['licence_date']; ?></td>
+    // Determine CSS class for licence date
+    $licence_class = $licence_diff <= 30 && $licence_diff <= 0 
+        ? 'bg-red' 
+        : ($licence_diff <= 60 && $licence_diff > 30 
+            ? 'bg-warning' 
+            : ($licence_diff > 0 ? 'bg-green' : ''));
+    ?>
 
+    <tr>
+        <td><?php echo $row['id']; ?></td>
+        <td>
+            <div class="d-flex align-items-center">
+                <label for="$day" class="badge bg-blue"><?php echo $row['number']; ?></label>
+            </div>
+        </td>
+        <td><?php echo $row['type_name']; ?></td>
+        <td><?php echo $row['brand']; ?></td>
+        <td>
+            <span class="badge <?php echo $insurance_class; ?>">
+                <?php echo $row['insurance_date']; ?>
+            </span>
+        </td>
+        <td>
+            <span class="badge <?php echo $licence_class; ?>">
+                <?php echo $row['licence_date']; ?>
+            </span>
+        </td>
+        <td>
+            <a href="repire.php?id=<?php echo $row['id']; ?>">
+                <button class="btn btn-sm btn-info"><i class="fas fa-hammer"></i></button>
+            </a>
+            <?php if ($user_level == 1): ?>
+                <a class="btn btn-sm btn-danger" onclick="confirmDelete(<?php echo $row['id']; ?>)">
+                    <i class="fas fa-trash"></i>
+                </a>
+            <?php endif; ?>
+        </td>
+    </tr>
 
- 
+<?php } ?>
+</tbody>
 
-                 
-
-
-
-                    
-                    <td>
-                        <a href="repire.php?id=<?php echo ($row['id']); ?>">
-                            <button class="btn btn-sm btn-info"><i class="fas fa-hammer"></i></button>
-                        </a>
-                        <?php if ($user_level == 1): ?>
-                        <a class="btn btn-sm btn-danger" onclick="confirmDelete(<?php echo $row['id']; ?>)"><i class="fas fa-trash"></i></a>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-
-                <!-- Edit Popup for each job -->
-                <div class="container-up d-none" id="edit_popup_<?php echo $id; ?>">
-                    <div class="row justify-content-center">
-                        <div class="box box-success popup" style="width: 180%; max-width: 800px;">
-                            <div class="box-header with-border d-flex justify-content-between align-items-center">
-                                <h3 class="box-title">Edit Job: <?php echo $row['id']; ?></h3>
-                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="click_close('<?php echo $id; ?>')">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="box-body">
-                                <form method="POST" action="edit_job.php">
-                                    <div class="form-group mb-4">
-                                        <label for="job-number">Job Number</label>
-                                        <input type="text" name="all_job_no" id="job-number" class="form-control" 
-                                            value="<?php echo $row['all_job_no']; ?>" placeholder="Enter job number" required>
-                                    </div>
-
-                                    <div class="form-group mb-4">
-                                        <label for="note">Note</label>
-                                        <textarea name="note" id="note" class="form-control" cols="30" rows="5" 
-                                                placeholder="Enter any notes about the job"><?php echo $row['note']; ?></textarea>
-                                    </div>
-
-                                    <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                    <input type="hidden" name="id2" value="0">
-
-                                    <div class="d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary mr-2">Save</button>
-                                        <button type="button" class="btn btn-secondary" onclick="click_close('<?php echo $id; ?>')">Cancel</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php } ?>
-            </tbody>
         </table>
     </div>
 
