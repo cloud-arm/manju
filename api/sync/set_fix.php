@@ -62,7 +62,7 @@ foreach ($sales_list as $list) {
 
                 $sql1 = "UPDATE sales SET sale_status = ? WHERE imi_number = ? AND card_number = ?";
                 $q = $db->prepare($sql1);
-                $q->execute(array("fix", $imi_no, $project_number, ));
+                $q->execute(array("fixed", $imi_no, $project_number, ));
             }
 
             // get sales list id
