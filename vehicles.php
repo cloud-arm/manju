@@ -42,7 +42,7 @@ $user_level = $_SESSION['USER_LEWAL'];
                 <div class="col-sm-6 col-md-4 col-xs-12">
 
                     <div class="info-box">
-                        <span class="info-box-icon"><i class="fa fa-file-text"></i></span>
+                        <span class="info-box-icon"><i class="fas fa-truck"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Vehicle COUNT</span>
                             <span
