@@ -30,6 +30,6 @@ echo $id;
 
 
 echo $result['status'];
-header("location: ../revinue");
+header("location: ../revenue");
 
 ?>
