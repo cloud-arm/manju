@@ -28,7 +28,8 @@ $insertData = array(
         "value" => $value,
         "number" => $veh_no,
         "type_name" => $type_name,
-        "date"=>date('Y-m-d')
+        "date"=>date('Y-m-d'),
+        "vehicle_id"=>$id,
     ),
     "other" => array(
     ),
