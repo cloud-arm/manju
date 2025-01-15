@@ -11,21 +11,18 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 $json_data = file_get_contents('php://input');
 
 // get values
-$recovery_list = json_decode($json_data, true);
+$collection_list = json_decode($json_data, true);
 
 // respond init
 $result_array = array();
 
-foreach ($recovery_list as $list) {
+foreach ($collection_list as $list) {
 
-    $tds_value = $list['tds_value'];
-    $no_of_installments = $list['no_of_installments'];
-    $installments_amount = $list['installments_amount'];
-    $positive = $list['positive'];
-    $status = $list['status'];
-    $schedule_date = $list['schedule_date'];
+    $amount = $list['amount'];
+    $pay_date = $list['pay_date'];
+    $recovery_id = $list['recovery_id'];
     $project_number = $list['project_number'];
-    $recovery_officer_id = $list['recovery_officer_id'];
+    $default_value = $list['default_value'];
 
     $app_id = $list['id'];
    
@@ -36,7 +33,7 @@ foreach ($recovery_list as $list) {
         try {
             //checking duplicate
             $con = 0;
-            $result = query("SELECT * FROM credit WHERE recovery_officer_id = '$recovery_officer_id' AND project_number = '$project_number' AND ststus = 'Setup'",'../../');
+            $result = query("SELECT * FROM credit_collection WHERE app_id = '$app_id'",'../../');
 
             if ($result instanceof PDOStatement) {
                 if ($result->rowCount() > 0) {
@@ -46,14 +43,14 @@ foreach ($recovery_list as $list) {
 
             if ($con == 0) {
 
-                // update query
-                $sql = "UPDATE credit SET tds_value = ?, no_of_installments = ?, installments_amount = ?, positive = ?, status = ?, schedule_date = ?, app_id = ? WHERE project_number = ?";
+                // insert query
+                $sql = "INSERT INTO credit_collection (amount,pay_date,recovery_id,project_number,default_value,app_id,sync_date,sync_time) VALUES (?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($tds_value, $no_of_installments, $installments_amount, $positive, $status, $schedule_date, $app_id, $project_number));
+                $ql->execute(array($amount, $pay_date, $recovery_id, $project_number, $default_value, $app_id, $sync_date, $sync_time));
             }
 
-            // get credit list id
-            $result = query("SELECT * FROM credit WHERE app_id='$app_id'",'../../');
+            // get credit collection list id
+            $result = query("SELECT * FROM credit_collection WHERE app_id='$app_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];
