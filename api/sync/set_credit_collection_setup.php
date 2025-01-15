@@ -11,19 +11,22 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 $json_data = file_get_contents('php://input');
 
 // get values
-$collection_list = json_decode($json_data, true);
+$recovery_list = json_decode($json_data, true);
 
 // respond init
 $result_array = array();
 
-foreach ($collection_list as $list) {
+foreach ($recovery_list as $list) {
 
-    $amount = $list['amount'];
-    $pay_date = $list['pay_date'];
-    $recovery_id = $list['recovery_id'];
+    $total_pay_amount = $list['total_pay_amount'];
+    $last_pay_date = $list['last_pay_date'];
+    $credit_balance = $list['credit_balance'];
+    $last_pay_amount = $list['last_pay_amount'];
+    $available_installments = $list['available_installments'];
+    $default_amount = $list['default_amount'];
+    $default_balance = $list['default_balance'];
     $project_number = $list['project_number'];
-    $default_value = $list['default_value'];
-    $balance = $list['balance'];
+    $status = $list['status'];
 
     $app_id = $list['id'];
    
@@ -34,7 +37,7 @@ foreach ($collection_list as $list) {
         try {
             //checking duplicate
             $con = 0;
-            $result = query("SELECT * FROM credit_collection WHERE app_id = '$app_id'",'../../');
+            $result = query("SELECT * FROM credit WHERE project_number = '$project_number' AND ststus = 'Setup'",'../../');
 
             if ($result instanceof PDOStatement) {
                 if ($result->rowCount() > 0) {
@@ -42,16 +45,16 @@ foreach ($collection_list as $list) {
                 }
             }
 
-            if ($con == 0) {
+            if ($con != 0) {
 
-                // insert query
-                $sql = "INSERT INTO credit_collection (amount,pay_date,recovery_id,project_number,default_value,app_id,sync_date,sync_time,balance) VALUES (?,?,?,?,?,?,?,?,?)";
+                // update query
+                $sql = "UPDATE credit SET total_pay_amount = ?, last_pay_date = ?, credit_balance = ?, last_pay_amount = ?, available_installments = ?, status = ?, default_amount = ?, default_balance = ? WHERE project_number = ?";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($amount, $pay_date, $recovery_id, $project_number, $default_value, $app_id, $sync_date, $sync_time, $balance));
+                $ql->execute(array($total_pay_amount, $last_pay_date, $credit_balance, $last_pay_amount, $available_installments, $status, $default_amount, $default_balance, $project_number));
             }
 
-            // get credit collection list id
-            $result = query("SELECT * FROM credit_collection WHERE app_id='$app_id'",'../../');
+            // get credit list id
+            $result = query("SELECT * FROM credit WHERE app_id='$app_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];
