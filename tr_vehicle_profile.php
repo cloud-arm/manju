@@ -39,18 +39,16 @@ $user_level = $_SESSION['USER_LEWAL'];
 
             $result = select('vehicles','*', 'id='.$vehicle_id);
                             for ($i = 0; $row = $result->fetch(); $i++) {
-                                $id = $row['id'];
                                 $number = $row['number'];
 
                             }
-
             // Assuming `select` is a custom function you created that runs a query
 $result = select('repair', '*', 'vehicle_id = ' . $vehicle_id . ' AND type_id = 1 ORDER BY date DESC LIMIT 1');
+echo $vehicle_id;
 
 // Fetch the latest repair entry
 if ($row = $result->fetch()) {
     $last_service_date = $row['date']; // Assuming the date column is named 'date'
-    $number = $row['number']; // Other details like number
 } else {
     $last_service_date = "No service data available";
 }
@@ -82,7 +80,6 @@ $result = select('repair', '*', 'vehicle_id = ' . $vehicle_id . ' AND type_id !=
 // Fetch the latest repair entry
 if ($row = $result->fetch()) {
     $last_repair_date = $row['date']; // Assuming the date column is named 'date'
-    $number = $row['number']; // Other details like number
 } else {
     $last_service_date = "No service data available";
 }

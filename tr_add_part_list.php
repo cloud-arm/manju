@@ -127,7 +127,7 @@ for ($i = 0; $row = $result->fetch(); $i++) {
     <!-- Add New Job Popup -->
     <div class="container-up d-none" id="add_job_popup">
         <div class="row w-70">
-            <div class="box box-success popup" style="width: 50%;">
+            <div class="box box-success popup" style="width: 150%;">
                 <div class="box-header with-border">
                     <h3 class="box-title">Add New vehicle</h3>
                     <small onclick="click_close('add')" class="btn btn-sm btn-success pull-right">
