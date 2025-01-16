@@ -48,7 +48,7 @@ foreach ($recovery_list as $list) {
             if ($con != 0) {
 
                 // update query
-                $sql = "UPDATE credit SET total_pay_amount = ?, last_pay_date = ?, credit_balance = ?, last_pay_amount = ?, available_installments = ?, status = ?, default_amount = ?, default_balance = ? WHERE project_number = ?";
+                $sql = "UPDATE credit SET total_pay_amount = ?, last_pay_date = ?, credit_balance = ?, last_pay_amount = ?, available_installments = ?, status = ?, default_value = ?, default_balance = ? WHERE project_number = ?";
                 $ql = $db->prepare($sql);
                 $ql->execute(array($total_pay_amount, $last_pay_date, $credit_balance, $last_pay_amount, $available_installments, $status, $default_amount, $default_balance, $project_number));
             }
