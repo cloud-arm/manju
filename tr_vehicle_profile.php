@@ -44,7 +44,6 @@ $user_level = $_SESSION['USER_LEWAL'];
                             }
             // Assuming `select` is a custom function you created that runs a query
 $result = select('repair', '*', 'vehicle_id = ' . $vehicle_id . ' AND type_id = 1 ORDER BY date DESC LIMIT 1');
-echo $vehicle_id;
 
 // Fetch the latest repair entry
 if ($row = $result->fetch()) {
@@ -103,7 +102,7 @@ if ($row = $result->fetch()) {
         <div class="info-box bg-lightblue">
             <span class="info-box-icon text-orange"><i class="fas fa-truck"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Vehicle COUNT</span>
+                <span class="info-box-text">Last Repaire</span>
                 <span class="info-box-number"><?php echo $last_repair_date ?></span>
                 <div class="progress">
                     <div class="progress-bar bg-blue" style="width: 100%"></div>
@@ -137,7 +136,7 @@ if ($row = $result->fetch()) {
         <div class="info-box bg-lightorange">
             <span class="info-box-icon text-yellow"><i class="fas fa-circle-notch"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Last Tyre Date</span>
+                <span class="info-box-text">Last Tyre/Tyres change Date</span>
                 <span class="info-box-number"><?php echo $last_tyre_date ?></span>
                 <div class="progress">
                     <div class="progress-bar bg-orange" style="width: 100%"></div>
@@ -154,7 +153,7 @@ if ($row = $result->fetch()) {
         <div class="info-box bg-lightpurple">
             <span class="info-box-icon text-green"><i class="fas fa-tools"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Total Repairs</span>
+                <span class="info-box-text">Total Repairs counts</span>
                 <span class="info-box-number"><?php echo $total_repairs ?></span>
                 <div class="progress">
                     <div class="progress-bar bg-purple" style="width: 100%"></div>
