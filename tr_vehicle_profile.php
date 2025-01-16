@@ -6,7 +6,7 @@
 include("head.php");
 include_once("auth.php");
 $r = $_SESSION['SESS_LAST_NAME'];
-$_SESSION['SESS_DEPARTMENT'] = 'transport';
+$_SESSION['SESS_DEPARTMENT'] = 'Transport';
 $_SESSION['SESS_FORM'] = 'vehicle';
 $user_level = $_SESSION['USER_LEWAL'];
 
@@ -23,7 +23,7 @@ $user_level = $_SESSION['USER_LEWAL'];
         <section class="content-header">
 
             <h1>
-                Approvel Vehicle
+                Vehicle 
                 <small>Preview</small>
             </h1>
         </section>
@@ -35,69 +35,178 @@ $user_level = $_SESSION['USER_LEWAL'];
             date_default_timezone_set("Asia/Colombo");
             $cash = $_SESSION['SESS_FIRST_NAME'];
             $date =  date("Y-m-d");
+            $vehicle_id = $_GET['id'];
+
+            $result = select('vehicles','*', 'id='.$vehicle_id);
+                            for ($i = 0; $row = $result->fetch(); $i++) {
+                                $number = $row['number'];
+
+                            }
+            // Assuming `select` is a custom function you created that runs a query
+$result = select('repair', '*', 'vehicle_id = ' . $vehicle_id . ' AND type_id = 1 ORDER BY date DESC LIMIT 1');
+echo $vehicle_id;
+
+// Fetch the latest repair entry
+if ($row = $result->fetch()) {
+    $last_service_date = $row['date']; // Assuming the date column is named 'date'
+} else {
+    $last_service_date = "No service data available";
+}
+
+            // Assuming `select` is a custom function you created that runs a query
+            $result = select('repair', 'Sum(value)', 'vehicle_id = ' . $vehicle_id . ' AND type_id = 1');
+
+            // Fetch the latest repair entry
+            if ($row = $result->fetch()) {
+                $value_spent = $row['Sum(value)']; // Assuming the date column is named 'date'
+            } else {
+                $value_spent = 0;
+            }
+
+            // Assuming `select` is a custom function you created that runs a query
+            $result = select('repair', '*', 'vehicle_id = ' . $vehicle_id . ' AND type_id = 4 ORDER BY date DESC LIMIT 1');
+
+            // Fetch the latest repair entry
+            if ($row = $result->fetch()) {
+                $last_tyre_date = $row['date']; // Assuming the date column is named 'date'
+                $number = $row['number']; // Other details like number
+            } else {
+                $last_tyre_date = "No Tyre changes yet";
+            }
+
+// Assuming `select` is a custom function you created that runs a query
+$result = select('repair', '*', 'vehicle_id = ' . $vehicle_id . ' AND type_id != 1 || type_id != 4 ORDER BY date DESC LIMIT 1');
+
+// Fetch the latest repair entry
+if ($row = $result->fetch()) {
+    $last_repair_date = $row['date']; // Assuming the date column is named 'date'
+} else {
+    $last_service_date = "No service data available";
+}
+
+$result = select('tr_parts_record', 'count(id)', 'vehicle_no=' . "'" . $number . "'");
+
+// Fetch the latest repair entry
+if ($row = $result->fetch()) {
+    $total_repairs = $row['count(id)']; // Assuming the date column is named 'date'
+} else {
+    $last_service_date = 0;
+}
+
             ?>
 
 
-            <div class="row">
-                <div class="col-sm-6 col-md-4 col-xs-12">
 
-                    <div class="info-box">
-                        <span class="info-box-icon"><i class="fas fa-truck"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Vehicle COUNT</span>
-                            <span
-                                class="info-box-number"><?php echo $tot_job=select_item('repair','COUNT(id)','approve=0'); ?></span>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 100%"></div>
-                            </div>
-                            <span class="progress-description">
-                                Total Approvel needs
-                            </span>
-                        </div>
-
-                    </div>
+<div class="row">
+    <!-- Vehicle Count -->
+    <div class="col-sm-6 col-md-4 col-xs-12">
+        <div class="info-box bg-lightblue">
+            <span class="info-box-icon text-orange"><i class="fas fa-truck"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Vehicle COUNT</span>
+                <span class="info-box-number"><?php echo $last_repair_date ?></span>
+                <div class="progress">
+                    <div class="progress-bar bg-blue" style="width: 100%"></div>
                 </div>
-
-                <div class="col-sm-6 col-md-4 col-xs-12">
-
-                    <div class="info-box">
-                        <span class="info-box-icon"><i class="fa fa-building"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">NEXT</span>
-                            <span class="info-box-number"></span>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: <?php echo ($cop_job/$tot_job)*100 ?>%"></div>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-4 col-xs-12">
-
-                    <div class="info-box">
-                        <span class="info-box-icon"><i class="fa fa-shopping-cart"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">NEXT</span>
-                            <span class="info-box-number"></span>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: <?php echo ($ret_job/$tot_job)*100 ?>%"></div>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-
+                <span class="progress-description text-dark">
+                    Total running jobs
+                </span>
             </div>
+        </div>
+    </div>
+
+    <!-- Last Service Date -->
+    <div class="col-sm-6 col-md-4 col-xs-12">
+        <div class="info-box bg-lightgreen">
+            <span class="info-box-icon text-blue"><i class="fas fa-tools"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Last Service Date</span>
+                <span class="info-box-number"><?php echo $last_service_date ?></span>
+                <div class="progress">
+                    <div class="progress-bar bg-green" style="width: 100%"></div>
+                </div>
+                <span class="progress-description text-dark">
+                    Last service performed
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Last Tyre Date -->
+    <div class="col-sm-6 col-md-4 col-xs-12">
+        <div class="info-box bg-lightorange">
+            <span class="info-box-icon text-yellow"><i class="fas fa-circle-notch"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Last Tyre Date</span>
+                <span class="info-box-number"><?php echo $last_tyre_date ?></span>
+                <div class="progress">
+                    <div class="progress-bar bg-orange" style="width: 100%"></div>
+                </div>
+                <span class="progress-description text-dark">
+                    Last tyre change
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Repairs -->
+    <div class="col-sm-6 col-md-4 col-xs-12">
+        <div class="info-box bg-lightpurple">
+            <span class="info-box-icon text-green"><i class="fas fa-tools"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Total Repairs</span>
+                <span class="info-box-number"><?php echo $total_repairs ?></span>
+                <div class="progress">
+                    <div class="progress-bar bg-purple" style="width: 100%"></div>
+                </div>
+                <span class="progress-description text-dark">
+                    Repairs completed
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Value Spent -->
+    <div class="col-sm-6 col-md-4 col-xs-12">
+        <div class="info-box bg-lightyellow">
+            <span class="info-box-icon text-red"><i class="fas fa-dollar-sign"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Total Value Spent</span>
+                <span class="info-box-number"><?php echo $value_spent ?></span>
+                <div class="progress">
+                    <div class="progress-bar bg-yellow" style="width: 100%"></div>
+                </div>
+                <span class="progress-description text-dark">
+                    Amount spent on services
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next -->
+    <div class="col-sm-6 col-md-4 col-xs-12">
+        <div class="info-box bg-lightgray">
+            <span class="info-box-icon text-white"><i class="fas fa-calendar-alt"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Vehicle number</span>
+                <span class="info-box-number"><?php echo $number ?></span>
+                <span class="progress-description text-dark">
+                    Upcoming maintenance
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
             <div class="box">
                 <div class="box-header">
                     <div class="row">
                         <div class="col-md-9">
-                            <h3 class="box-title">Vehicle LIST For need Approve</h3>
+                            <h3 class="box-title">Repire list LIST</h3>
                         </div>
 
                     </div>
@@ -115,65 +224,31 @@ $user_level = $_SESSION['USER_LEWAL'];
 
                 <!-- Job List Table -->
                 <div class="box-body">
-        <table id="example1" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Vehicle Number</th>
-                    <th>Repire Type</th>
-                    <th>Predict value</th>
-                    <th>#</th>
-                </tr>
-            </thead>
-            <tbody>
-<?php
-if ($user_level != 5) {
-    // For non-level 5 users, show all jobs or filter by customer type
-    $result = isset($_GET['type']) && $_GET['type'] !== 'all' 
-        ? select('repair', '*', 'approve=0') 
-        : select('repair', '*', 'approve=0');
-} else {
-    // For level 5 users, default to showing retail jobs
-    $result = (!isset($_GET['type']) || $_GET['type'] == 'retail') 
-        ? select('repair', '*', 'approve=0') 
-        : select('repair', '*' , 'approve=0');
-}
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Parts</th>
+                                <th>Value</th>
 
-// Current date for comparison
-$current_date = new DateTime();
+                            </tr>
+                        </thead>
+                        <?php
 
-for ($i = 0; $row = $result->fetch(); $i++) {
-    // Parse dates for insurance and licence
+$result = select('tr_parts_record', '*', 'vehicle_no=' . "'" . $number . "'");
+for ($i = 0; $row = $result->fetch(); $i++) {  ?>
 
-    ?>
+                        <tr class="record">
+                            <td><?php echo $row['date'];   ?> </td>
+                            <td><?php echo $row['parts'];   ?></td>
+                            <td><?php echo $row['value'];   ?></td>
 
-    <tr>
-        <td><?php echo $row['id']; ?></td>
-        <td>
-            <div class="d-flex align-items-center">
-                <label for="$day" class="badge bg-blue"><?php echo $row['number']; ?></label>
-            </div>
-        </td>
-        <td><?php echo $row['type_name']; ?></td>
-        <td><?php echo $row['value']; ?></td>
+                        </tr>
 
-        <td>
-            <a onclick="confirmapp(<?php echo $row['id']; ?>)">
-                <button class="btn btn-sm btn-info"><i class="fas fa-check"></i></button>
-            </a>
-            <?php if ($user_level == 1): ?>
-                <a class="btn btn-sm btn-danger" onclick="confirmDelete(<?php echo $row['id']; ?>)">
-                    <i class="fas fa-trash"></i>
-                </a>
-            <?php endif; ?>
-        </td>
-    </tr>
+                        <?php }   ?>
 
-<?php } ?>
-</tbody>
-
-        </table>
-    </div>
+                    </table>
+                </div>
 
             </div>
 
@@ -198,16 +273,21 @@ for ($i = 0; $row = $result->fetch(); $i++) {
                         <div class="row" style="display: block;">
 
 
+
+
+
+
+
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Vehicle type</label>
                                     <select class="form-control select2 " id="com_id" name="veh_id" style="width: 100%;"
                                         tabindex="1" autocomplete="off">
                                         <?php 
-                                         $result = select('vehicle_type', '*');
-                                         while ($row = $result->fetch()) { 
-                                         $com_id = $row['id']; 
-                                          ?>
+                                                                        $result = select('vehicle_type', '*');
+                                                                        while ($row = $result->fetch()) { 
+                                                                        $com_id = $row['id']; 
+                                                                    ?>
                                         <option value="<?php echo $row['id']; ?>">
                                             <?php echo $row['name']; ?>
                                         </option>
@@ -215,6 +295,8 @@ for ($i = 0; $row = $result->fetch(); $i++) {
                                     </select>
                                 </div>
                             </div>
+
+
 
 
                             <div class="col-md-10">
@@ -236,17 +318,25 @@ for ($i = 0; $row = $result->fetch(); $i++) {
                             <div class="col-md-10">
                                 <div class="form-group">
                                     <label>Insurance Expire date</label>
-                                    <input class="form-control" type="text" id="datepicker1" name="insurance_date" placeholder="Select date" >
-                                    </div>
+                                    <input class="form-control" type="text" id="datepicker1" name="insurance_date"
+                                        placeholder="Select date">
+                                </div>
                             </div>
-
 
                             <div class="col-md-10">
                                 <div class="form-group">
                                     <label>Licence Expire date</label>
-                                    <input class="form-control" type="text" id="datepicker" name="licence_date" placeholder="Select date" >
-                                    </div>
+                                    <input class="form-control" type="text" id="datepicker" name="licence_date"
+                                        placeholder="Select date">
+                                </div>
                             </div>
+
+
+
+
+
+
+
 
 
                             <div class="col-md-12">
@@ -257,6 +347,7 @@ for ($i = 0; $row = $result->fetch(); $i++) {
                                         class="btn btn-info btn-sm pull-right">
                                 </div>
                             </div>
+
 
                         </div>
 
@@ -285,7 +376,7 @@ for ($i = 0; $row = $result->fetch(); $i++) {
     <!-- FastClick -->
     <script src="../../plugins/fastclick/fastclick.js"></script>
 
-        <!-- Select2 -->
+    <!-- Select2 -->
     <script src="../../plugins/select2/select2.full.min.js"></script>
 
     <!-- date-range-picker -->
@@ -316,7 +407,7 @@ for ($i = 0; $row = $result->fetch(); $i++) {
     </script>
 
     <script>
-            //Date picker
+    //Date picker
     $('#datepicker1').datepicker({
         autoclose: true,
         datepicker: true,
@@ -392,17 +483,10 @@ for ($i = 0; $row = $result->fetch(); $i++) {
         }
     }
 
-    function confirmDelete(id) { 
+    function confirmDelete(id) {
         if (confirm('Are you sure you want to delete this item?')) {
             // Redirect to a PHP page that handles the deletion
-            window.location.href = 'delete/tr_repir_dll.php?id=' + id;
-        }
-    }
-
-    function confirmapp(id) { 
-        if (confirm('Are you sure you want to approve this item?')) {
-            // Redirect to a PHP page that handles the deletion
-            window.location.href = 'edit/tr_repir_appr.php?id=' + id;
+            window.location.href = 'delete/vehicle_dill.php?id=' + id;
         }
     }
     </script>

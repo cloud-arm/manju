@@ -198,6 +198,9 @@ for ($i = 0; $row = $result->fetch(); $i++) {
             </span>
         </td>
         <td>
+        <a href="tr_vehicle_profile.php?id=<?php echo $row['id']; ?>">
+                <button class="btn btn-sm btn-info"><i class="fa fa-info-circle"></i></button>
+            </a>
             <a href="repire.php?id=<?php echo $row['id']; ?>">
                 <button class="btn btn-sm btn-info"><i class="fas fa-hammer"></i></button>
             </a>
