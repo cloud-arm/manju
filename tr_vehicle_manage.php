@@ -23,7 +23,7 @@ $user_level = $_SESSION['USER_LEWAL'];
         <section class="content-header">
 
             <h1>
-                Home
+                Approvel Vehicle
                 <small>Preview</small>
             </h1>
         </section>
@@ -97,11 +97,9 @@ $user_level = $_SESSION['USER_LEWAL'];
                 <div class="box-header">
                     <div class="row">
                         <div class="col-md-9">
-                            <h3 class="box-title">Vehicle LIST</h3>
+                            <h3 class="box-title">Vehicle LIST For need Approve</h3>
                         </div>
-                        <div class="col-md-3 text-right">
-                            <span onclick="click_open('add')" class="btn btn-primary btn-sm">Add New Vehicle</span>
-                        </div>
+
                     </div>
 
 
@@ -250,7 +248,7 @@ for ($i = 0; $row = $result->fetch(); $i++) {
                                     </div>
                             </div>
 
-                            
+
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <input type="hidden" name="cus_id" value="0" id="cus_id">

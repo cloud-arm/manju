@@ -56,9 +56,7 @@ $user_level = $_SESSION['USER_LEWAL'];
                         <div class="col-md-9">
                             <h3 class="box-title">Vehicle LIST</h3>
                         </div>
-                        <div class="col-md-3 text-right">
-                            <span onclick="click_open('add')" class="btn btn-primary btn-sm">Add New Vehicle</span>
-                        </div>
+
                     </div>
 
 
@@ -79,6 +77,9 @@ $user_level = $_SESSION['USER_LEWAL'];
                 <tr>
                     <th>No</th>
                     <th>Vehicle Number</th>
+                    <th>Type name</th>
+                    <th>Total Value</th>
+                    <th>@</th>
 
                 </tr>
             </thead>
