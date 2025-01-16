@@ -37,7 +37,7 @@ foreach ($recovery_list as $list) {
         try {
             //checking duplicate
             $con = 0;
-            $result = query("SELECT * FROM credit WHERE project_number = '$project_number' AND ststus = 'Setup'",'../../');
+            $result = query("SELECT * FROM credit WHERE project_number = '$project_number' AND status = 'Setup'",'../../');
 
             if ($result instanceof PDOStatement) {
                 if ($result->rowCount() > 0) {
