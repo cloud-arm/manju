@@ -35,8 +35,15 @@ $user_level = $_SESSION['USER_LEWAL'];
             date_default_timezone_set("Asia/Colombo");
             $cash = $_SESSION['SESS_FIRST_NAME'];
             $date =  date("Y-m-d");
+            $branch_id = 1;
             ?>
 
+            <?php 
+                $result = query("SELECT COUNT(*) AS total_visit FROM visit WHERE branch_id = '$branch_id'");
+                for ($i = 0; $row = $result->fetch(); $i++) {
+                    $visit_count = $row["total_visit"];
+                }
+            ?>
 
             <div class="row">
                 <div class="col-sm-6 col-md-4 col-xs-12">
@@ -44,14 +51,11 @@ $user_level = $_SESSION['USER_LEWAL'];
                     <div class="info-box">
                         <span class="info-box-icon"><i class="fa fa-file-text"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">PURCHASE</span>
-                            <span class="info-box-number">0</span>
+                            <span class="info-box-text">Total Visit</span>
+                            <span class="info-box-number"><?php echo $visit_count ?></span>
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
                             </div>
-                            <span class="progress-description">
-                                Total running jobs
-                            </span>
                         </div>
 
                     </div>
@@ -104,18 +108,48 @@ $user_level = $_SESSION['USER_LEWAL'];
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Job Number</th>
-                    <th>Company</th>
-                    <th>Location</th>
+                    <th>MPO Name</th>
+                    <th>Product Name</th>
+                    <th>IMI Number</th>
                     <th>Date</th>
-                    <th>Status</th>
-                    <th>Prograss</th>
-
+                    <th>Pay Type</th>
+                    <th>Amount / Down Payment</th>
                     <th>#</th>
-
                 </tr>
             </thead>
+
+            <tbody>
+            <?php 
+                $result = query("SELECT * FROM sales WHERE branch_id = '$branch_id' ORDER By id DESC");
+                for ($i = 0; $row = $result->fetch(); $i++) {
+                    $mpo_name = $row['mpo_name'];
+                    $product_name = $row['product_name'];
+                    $imi_no = $row['imi_number'];
+                    $date = $row['date'];
+                    $pay_type = $row['pay_type'];
+                    if ($pay_type == 'Cash') {
+                    $payment = $row['amount'];
+                    }else{
+                        $payment = $row['down_payment'];
+                    }
+            ?>
+                <tr>
+                <td><?php echo $i+1; ?></td>
+                <td><?php echo $mpo_name; ?></td>
+                <td><?php echo $product_name; ?></td>
+                <td><?php echo $imi_no; ?></td>
+                <td><?php echo $date; ?></td>
+                <td><?php echo $pay_type; ?></td>
+                <td><?php echo $payment; ?></td>
+                <td>
+                    <a class="btn btn-danger" onclick="">
+                        <i class="fas fa-check-circle"></i>
+                    </a>
+                </td>
+                </tr>
+            <?php } ?>
             
+            </tbody>
         </table>
     </div>
 </div>

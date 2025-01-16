@@ -12,7 +12,8 @@ $result = update(
     [
         'driver_id' => $driver_id,
         'lorry_number'=> $vehicle_id,
-        'gri_create_date'=> $date
+        'gri_create_date'=> $date,
+        'action'=> '5'
     ],
     "invoice_no = '$invoice'",
     ''

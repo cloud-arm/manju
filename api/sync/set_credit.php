@@ -1,67 +1,60 @@
 <?php
-include("../connect.php");
-include("../config.php");
-include('log.php');
+include("../../connect.php");
+include("../../config.php");
+include('../log.php');
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-
 // get json data
 $json_data = file_get_contents('php://input');
 
 // get values
-$visit_list = json_decode($json_data, true);
+$recovery_list = json_decode($json_data, true);
 
 // respond init
 $result_array = array();
 
-foreach ($visit_list as $list) {
+foreach ($recovery_list as $list) {
 
-    $emp_id = $list['emp_id'];
-    $name = $list['name'];
-    $address = $list['address'];
-    $phone = $list['phone'];
-    $nic = $list['nic'];
     $tds_value = $list['tds_value'];
-    $schedule_date = $list['schedule_date'];
+    $no_of_installments = $list['no_of_installments'];
+    $available_installments = $list['available_installments'];
+    $installments_amount = $list['installments_amount'];
     $positive = $list['positive'];
-    $date = $list['date'];
-    $time = $list['time'];
-    $product_id = $list['product_id'];
+    $status = $list['status'];
+    $schedule_date = $list['schedule_date'];
+    $project_number = $list['project_number'];
+    $recovery_officer_id = $list['recovery_officer_id'];
 
     $app_id = $list['id'];
-
+   
     $sync_date = date('Y-m-d');
     $sync_time = date('H:i:s');
 
         //------------------------------------------------------------------------------//
         try {
-
             //checking duplicate
             $con = 0;
-            $result = query("SELECT * FROM visit WHERE app_id = '$app_id' AND emp_id = '$emp_id'",'../');
-            for ($i = 0; $row = $result->fetch(); $i++) {
-                $con = $row['id'];
-            }
+            $result = query("SELECT * FROM credit WHERE recovery_officer_id = '$recovery_officer_id' AND project_number = '$project_number' AND ststus = 'Setup'",'../../');
 
-            //get the branch id from mpo id
-            $result = query("SELECT branch_id,name FROM employee WHERE id = '$emp_id'",'../');
-            for ($i = 0; $row = $result->fetch(); $i++) {
-                $branch_id = $row['branch_id'];
-                $emp_name = $row['name'];
+            if ($result instanceof PDOStatement) {
+                if ($result->rowCount() > 0) {
+                    $con = $result->rowCount();
+                }
             }
 
             if ($con == 0) {
-                // insert query
-                $sql = "INSERT INTO visit (emp_id,name,address,phone,nic,tds_value,schedule_date,positive,date,time,product_id,app_id,sync_date,sync_time,branch_id,employee) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+                // update query
+                $sql = "UPDATE credit SET tds_value = ?, no_of_installments = ?, available_installments = ?, installments_amount = ?, positive = ?, status = ?, schedule_date = ?, app_id = ? WHERE project_number = ?";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($emp_id, $name, $address, $phone, $nic, $tds_value, $schedule_date, $positive, $date, $time, $product_id, $app_id, $sync_date, $sync_time, $branch_id, $emp_name));
+                $ql->execute(array($tds_value, $no_of_installments, $available_installments, $installments_amount, $positive, $status, $schedule_date, $app_id, $project_number));
             }
 
-            // get sales list id
-            $result = query("SELECT * FROM visit WHERE app_id='$app_id'",'../');
+            // get credit list id
+            $result = query("SELECT * FROM credit WHERE app_id='$app_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];

@@ -1,29 +1,21 @@
 <?php
-session_start();
-include('../config.php');
+include("../../connect.php");
+include("../../config.php");
+include('../log.php');
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-
-// Retrieve the transaction ID from the POST data
-
-
-if (!isset($_POST['emp_id'])) {
+if (!isset($_POST['id'])) {
     echo json_encode(array("message" => "Error: Missing parameters."));
     exit();
 }else{
-    $emp_id = $_POST['emp_id'];
-    $id = $_POST['cloud_id'];
+    $id = $_POST['id'];
+    $tech_id = $_POST['tech_id'];
     try {
-        // get the branch id of given mpo
-        $result = query("SELECT branch_id FROM employee WHERE id = '$emp_id' ",'../');
-        for ($i = 0; $row = $result->fetch(); $i++) {
-             $branch_id = $row['branch_id'];
-            }
         // Prepare and execute the SQL query
-        $result = query("SELECT id, name, des FROM employee WHERE branch_id = '$branch_id' AND id > '$id' ",'../');
+        $result = query("SELECT imi_number, tech_id, invoice_no, mpo_name, card_number, id, sale_status FROM sales WHERE id > '$id' AND tech_id = '$tech_id'",'../../');
     
         // Fetch the results and create an array
         $result_array = array();
@@ -37,4 +29,3 @@ if (!isset($_POST['emp_id'])) {
         echo json_encode(array("message" => "Error: " . $e->getMessage()));
     }
 }
-

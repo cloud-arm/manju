@@ -789,6 +789,210 @@ $_SESSION['SESS_FORM'] = 'index';
                 </li>
                 <?php } ?>
 
+                <?php if ($status_id >= 5){ ?>
+                    <li>
+                    <i class="fa fa-check-circle bg-green"></i>
+                    <div class="timeline-item">
+                        <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                        <h3 class="timeline-header"><a href="#">GRN Order Details</a></h3>
+                        <div class="box-body">
+                                            <table id="example2" class="table table-bordered table-striped">
+                                                <thead>
+                                                <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                                
+                                <th>#</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                            // Fetch purchase list data based on invoice number
+                            $id = $_GET['id'];
+                            $r1 = select_query("SELECT * FROM purchases_list WHERE invoice_no='$id' AND type='Order'");
+                            while ($row = $r1->fetch()) {
+                                $invo = $row['invoice_no'];
+                                $type = $row['type'];
+                                $date = $row['date'];
+                                $qty = $row['qty'];
+                                $action = $row['action'];
+                                //$amount = $row['amount'];
+                                $price = $row['sell'];
+                                $id = $row['id'];
+                                $approved = $row['approve'];
+                                $name = $row['name'];
+
+
+                                // Only display rows where approval is not equal to 5
+                                if ($approved != 5) {
+                            ?>
+                            <tr>
+                                <td><?php echo $i++; ?></td> <!-- Increment row number -->
+                                <td> <a href="grn_summery.php?id=<?php echo $id; ?>"  style="width: 120px; text-align: center; line-height: 32px; text-decoration: none;"><?php echo $name; ?></a>
+                                </td>
+                                <td><?php echo $type; ?></td>
+                                <td><?php echo $date; ?></td>
+                                <td><?php echo $qty; ?></td>
+                                <td><?php echo $price; ?></td>
+
+                                <td><?php  echo $action ?></td>
+                                 <?php  
+                                    $u_id = $_SESSION['SESS_MEMBER_ID'];
+                                    $result = query("SELECT * FROM user WHERE id = '$u_id'");
+                                    for ($i = 0; $r01 = $result->fetch(); $i++) {
+                                        $user_level = $r01['user_lewal'];  
+                                    }
+                                 ?>
+                                <td> 
+                                    <!-- if logged user is Branch manager -->
+                                    <?php if ($user_level == 5): ?>
+                                        <?php if ($approved != 5 && $approved != 20): ?>
+                                        <a class="btn btn-danger" onclick="confirmApp3(<?php echo $id; ?>)">
+                                        <i class="fas fa-check-circle"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                    <?php if ($approved != 3 && $approved != 20): ?>
+                                    <!-- Hide buttons if approved is 1 or 5 -->
+                                    <a class="btn btn-danger">
+                                        <i class="fas fa-times-circle"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                    <?php endif; ?>
+
+                                </td>
+
+
+                            </tr>
+
+                            <div class="container-up d-none" id="edit_popup_2<?php echo $row['id']; ?>">
+                                <div class="row w-70">
+                                    <div class="box box-success popup" style="width: 100%;">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Edit details</h3>
+                                            <small onclick="edit_close(<?php echo $row['id']; ?>)"
+                                                class="btn btn-sm btn-success pull-right"><i
+                                                    class="fa fa-times"></i></small>
+                                            <i class="fa fa-times"></i>
+                                            </small>
+                                        </div>
+                                        <div class="box-body d-block">
+                                            <form method="POST" action="edit_grn_order.php">
+                                                <div class="row" style="display: block;">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>qty</label>
+                                                            <input type="number" name="qty" class="form-control"
+                                                                value="" required>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="emp_id" value="<?php echo $u_id ?>">
+                                                        <input type="hidden" name="id"
+                                                            value="<?php echo $row['id']; ?>">
+
+                                                        <input type="submit" style="margin-top: 23px; width: 100%;"
+                                                            value="Save" class="btn btn-info btn-sm">
+                                                    </div>
+                                                </div>
+
+                                        </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container-up d-none" id="edit_popup_<?php echo $row['id']; ?>">
+                                <div class="row w-70">
+                                    <div class="box box-success popup" style="width: 100%;">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Reject details</h3>
+                                            <small onclick="edit_close(<?php echo $row['id']; ?>)"
+                                                class="btn btn-sm btn-success pull-right"><i
+                                                    class="fa fa-times"></i></small>
+                                            <i class="fa fa-times"></i>
+                                            </small>
+                                        </div>
+                                        <div class="box-body d-block">
+                                            <form method="POST" action="reject_grn_order.php">
+                                                <div class="row" style="display: block;">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>note</label>
+                                                            <input type="text" name="note" class="form-control"
+                                                                value="" required>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="emp_id" value="<?php echo $u_id ?>">
+                                                        <input type="hidden" name="id"
+                                                            value="<?php echo $row['id']; ?>">
+
+                                                        <input type="submit" style="margin-top: 23px; width: 100%;"
+                                                            value="Save" class="btn btn-info btn-sm">
+                                                    </div>
+                                                </div>
+
+                                        </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                </div>
+                <?php
+                        } 
+                        ?>
+                <?php
+        }
+    
+    ?>
+                </tbody>
+                                            </table>
+                                        </div>
+                    </div>
+                </li>
+                <?php } ?>
+
+                <?php if ($status_id >= 6){ ?>
+                    <li>
+                    <i class="fa fa-check-circle bg-green"></i>
+                    <div class="timeline-item p-3 bg-light rounded shadow-sm">
+                        <span class="time text-muted"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                        <h3 class="timeline-header"><a href="#" class="text-primary">GRI Order Details</a></h3>
+
+                        <div class="row mt-3 align-items-center  box-body">
+                                <div class="col-md-12">
+                                    <h5 class="timeline-header font-weight-bold" style="color: red;"> This order has been completed successfully.</h5>
+                                </div>
+                            </div>
+
+                    </div>
+                    </li>
+                <?php } ?>
+
                 <?php if ($reject == "reject"){ ?>
                     <li>
                     <i class="fa fa-check-circle bg-green"></i>
@@ -868,6 +1072,13 @@ $_SESSION['SESS_FORM'] = 'index';
         if (confirm('Are you sure you want to Approve this item?')) {
             // Redirect to a PHP page that handles the deletion
             window.location.href = 'purchase_order_stores_approve.php?id=' + id;
+        }
+    }
+
+    function confirmApp3(id) {
+        if (confirm('Are you sure you want to Approve this item?')) {
+            // Redirect to a PHP page that handles the deletion
+            window.location.href = 'grn_create.php?id=' + id;
         }
     }
 

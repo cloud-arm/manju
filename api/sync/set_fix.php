@@ -1,35 +1,31 @@
 <?php
-include("../connect.php");
-include("../config.php");
-include('log.php');
+include("../../connect.php");
+include("../../config.php");
+include('../log.php');
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-
 // get json data
 $json_data = file_get_contents('php://input');
 
 // get values
-$visit_list = json_decode($json_data, true);
+$sales_list = json_decode($json_data, true);
 
 // respond init
 $result_array = array();
 
-foreach ($visit_list as $list) {
+foreach ($sales_list as $list) {
 
-    $emp_id = $list['emp_id'];
-    $name = $list['name'];
-    $address = $list['address'];
-    $phone = $list['phone'];
-    $nic = $list['nic'];
-    $tds_value = $list['tds_value'];
-    $schedule_date = $list['schedule_date'];
-    $positive = $list['positive'];
+    $imi_no = $list['imi_no'];
+    $project_number = $list['project_number'];
     $date = $list['date'];
     $time = $list['time'];
-    $product_id = $list['product_id'];
+    $tds_value = $list['tds_value'];
+    $water_source = $list['water_source'];
+    $nic = $list['nic'];
+    $tech_id = $list['tech_id'];
 
     $app_id = $list['id'];
 
@@ -38,30 +34,39 @@ foreach ($visit_list as $list) {
 
         //------------------------------------------------------------------------------//
         try {
-
             //checking duplicate
             $con = 0;
-            $result = query("SELECT * FROM visit WHERE app_id = '$app_id' AND emp_id = '$emp_id'",'../');
+            $result = query("SELECT * FROM fix WHERE imi_no = '$imi_no' AND project_number = '$project_number'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $con = $row['id'];
             }
 
-            //get the branch id from mpo id
-            $result = query("SELECT branch_id,name FROM employee WHERE id = '$emp_id'",'../');
-            for ($i = 0; $row = $result->fetch(); $i++) {
-                $branch_id = $row['branch_id'];
-                $emp_name = $row['name'];
-            }
+            // //get the branch id from mpo id
+            // $result = query("SELECT branch_id,name FROM employee WHERE id = '$mpo_id'",'../../');
+            // for ($i = 0; $row = $result->fetch(); $i++) {
+            //     $branch_id = $row['branch_id'];
+            //     $mpo_name = $row['name'];
+            // }
+
+            // $result1 = query("SELECT product_name FROM products WHERE id = '$product_id'",'../../');
+            // for ($i = 0; $row = $result1->fetch(); $i++) {
+            //     $product_name = $row['product_name'];
+            // }
 
             if ($con == 0) {
+
                 // insert query
-                $sql = "INSERT INTO visit (emp_id,name,address,phone,nic,tds_value,schedule_date,positive,date,time,product_id,app_id,sync_date,sync_time,branch_id,employee) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO fix (imi_no,project_number,date,time,tds_value,water_source,nic,app_id,sync_date,sync_time,tech_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($emp_id, $name, $address, $phone, $nic, $tds_value, $schedule_date, $positive, $date, $time, $product_id, $app_id, $sync_date, $sync_time, $branch_id, $emp_name));
+                $ql->execute(array($imi_no, $project_number, $date, $time, $tds_value, $water_source, $nic, $app_id, $sync_date, $sync_time, $tech_id));
+
+                $sql1 = "UPDATE sales SET sale_status = ? WHERE imi_number = ? AND card_number = ?";
+                $q = $db->prepare($sql1);
+                $q->execute(array("fixed", $imi_no, $project_number, ));
             }
 
             // get sales list id
-            $result = query("SELECT * FROM visit WHERE app_id='$app_id'",'../');
+            $result = query("SELECT * FROM fix WHERE app_id='$app_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];
