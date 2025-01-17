@@ -75,9 +75,9 @@ foreach ($sales_list as $list) {
                 $ql->execute(array($pay_type, $amount, $date, $time, $invoice_no, $balance, $down_payment));
 
                 if ($pay_type == "Credit") {
-                    $sql3 = "INSERT INTO credit (credit_amount, schedule_date, invoice_no) VALUES (?,?,?,?)";
+                    $sql3 = "INSERT INTO credit (credit_amount, credit_balance, schedule_date, invoice_no, branch_id) VALUES (?,?,?,?,?)";
                 $ql = $db->prepare($sql3);
-                $ql->execute(array($balance, '', $invoice_no, $branch_id));
+                $ql->execute(array($balance, $balance, '', $invoice_no, $branch_id));
                 }
             }
 
