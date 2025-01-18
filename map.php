@@ -102,7 +102,7 @@ include("connect.php");
       // Replace 'your-php-script.php' with the actual path to your PHP script
       // Modify this according to your data retrieval mechanism (e.g., AJAX, WebSocket, etc.)
       var customIcon = L.icon({
-        iconUrl: 'user_pic/lorry.png', // URL to the custom marker icon image
+        iconUrl: 'icon/user.png', // URL to the custom marker icon image
         iconSize: [65, 40], // Size of the icon
         iconAnchor: [20, 40], // Point of the icon which will correspond to marker's location
         popupAnchor: [0, -40], // Point from which the popup should open relative to the iconAnchor
@@ -110,7 +110,7 @@ include("connect.php");
       });
 
       var yIcon = L.icon({
-        iconUrl: 'icon/yard.png', // URL to the custom marker icon image
+        iconUrl: 'icon/user.png', // URL to the custom marker icon image
         iconSize: [80, 80], // Size of the icon
         iconAnchor: [20, 40], // Point of the icon which will correspond to marker's location
         popupAnchor: [0, -40], // Point from which the popup should open relative to the iconAnchor
@@ -118,7 +118,7 @@ include("connect.php");
       });
 
       var shopIcon = L.icon({
-        iconUrl: 'icon/dealer.png', // URL to the custom marker icon image
+        iconUrl: 'icon/user.png', // URL to the custom marker icon image
         iconSize: [40, 40], // Size of the icon
         iconAnchor: [20, 40], // Point of the icon which will correspond to marker's location
         popupAnchor: [0, -40], // Point from which the popup should open relative to the iconAnchor
