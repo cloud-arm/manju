@@ -15,6 +15,7 @@ $password=$_POST['password'];
 $action="not";
 $name='';
 $user_id=0;
+$user_lewal=0;
 
 $result = $db->prepare("SELECT * FROM user WHERE username='$user' AND password='$password' ");
 $result->bindParam(':userid', $res);
@@ -22,6 +23,7 @@ $result->execute();
 for($i=0; $row = $result->fetch(); $i++){ 
     $user_id=$row['employee_id'];
     $name=$row['name'];
+    $user_lewal=$row['user_lewal'];
     $action="ok";
  }
  
@@ -33,6 +35,7 @@ for($i=0; $row = $result->fetch(); $i++){
 $result_array = array ("action" => $action,
                        "user_id" => $user_id,
                        "name" => $name,
+                       "user_lewal"=> $user_lewal,
                        "key" => $key);
 
 
