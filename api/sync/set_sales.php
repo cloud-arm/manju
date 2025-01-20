@@ -87,6 +87,7 @@ foreach ($sales_list as $list) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];
                 $invo = $row['invoice_no'];
+                $sale_status = $row['sale_status'];
             }
 
             // create success respond 
@@ -94,6 +95,7 @@ foreach ($sales_list as $list) {
                 "cloud_id" => $id,
                 "app_id" => $ap_id,
                 "invoice_no" => $invo,
+                "sale_status" => $sale_status,
                 "status" => "success",
                 "message" => "",
             );
@@ -107,6 +109,7 @@ foreach ($sales_list as $list) {
                 "cloud_id" => 0,
                 "app_id" => 0,
                 "invoice_no" => 0,
+                "sale_status" => "",
                 "status" => "failed",
                 "message" => $e->getMessage(),
             );
