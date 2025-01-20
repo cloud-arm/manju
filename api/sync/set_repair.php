@@ -36,7 +36,7 @@ foreach ($repair_list as $list) {
         try {
             //checking duplicate
             $con = 0;
-            $result = query("SELECT * FROM repair WHERE project_number = '$project_number' AND app_id = '$app_id'",'../../');
+            $result = query("SELECT * FROM sale_repair WHERE project_number = '$project_number' AND app_id = '$app_id'",'../../');
 
             if ($result instanceof PDOStatement) {
                 if ($result->rowCount() > 0) {
@@ -47,13 +47,13 @@ foreach ($repair_list as $list) {
             if ($con == 0) {
 
                 // update query
-                $sql = "INSERT INTO repair (emp_id,emp_type,amount,date,time,sync_date,sync_time,project_number,repair_imi_number,repair_type,app_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO sale_repair (emp_id,emp_type,amount,date,time,sync_date,sync_time,project_number,repair_imi_number,repair_type,app_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
                 $ql->execute(array($emp_id, $emp_type, $amount, $date, $time, $sync_date, $sync_time, $project_number, $repair_imi_number, $repair_type, $app_id));
             }
 
             // get credit list id
-            $result = query("SELECT * FROM repair WHERE app_id='$app_id'",'../../');
+            $result = query("SELECT * FROM sale_repair WHERE app_id='$app_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];
