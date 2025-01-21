@@ -19,10 +19,11 @@ $result_array = array();
 foreach ($cash_list as $list) {
 
     $emp_id = $list['emp_id'];
-    $emp_name = $list['emp_name'];
     $emp_type = $list['emp_type'];
-    $balance = $list['balance'];
-    $last_update = $list['last_update'];
+    $date = $list['date'];
+    $time = $list['time'];
+    $deposit_amount	 = $list['deposit_amount'];
+    $bank_number = $list['bank_number'];
 
     $app_id = $list['id'];
    
@@ -33,7 +34,7 @@ foreach ($cash_list as $list) {
         try {
             //checking duplicate
             $con = 0;
-            $result = query("SELECT * FROM cash_account WHERE emp_id = '$emp_id' AND app_id = '$app_id'",'../../');
+            $result = query("SELECT * FROM cash_deposit WHERE emp_id = '$emp_id' AND app_id = '$app_id'",'../../');
 
             if ($result instanceof PDOStatement) {
                 if ($result->rowCount() > 0) {
@@ -44,13 +45,13 @@ foreach ($cash_list as $list) {
             if ($con == 0) {
 
                 // update query
-                $sql = "INSERT INTO cash_account (emp_id,emp_name,emp_type,balance,last_update,sync_date,sync_time,app_id) VALUES (?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO cash_deposit (emp_id,emp_type,date,time,deposit_amount,bank_number,sync_date,sync_time,app_id) VALUES (?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($emp_id, $emp_name, $emp_type, $balance, $last_update, $sync_date, $sync_time, $app_id));
+                $ql->execute(array($emp_id, $emp_type, $date, $time, $deposit_amount, $bank_number, $sync_date, $sync_time, $app_id));
             }
 
             // get credit list id
-            $result = query("SELECT * FROM cash_account WHERE app_id='$app_id'",'../../');
+            $result = query("SELECT * FROM cash_deposit WHERE app_id='$app_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];
