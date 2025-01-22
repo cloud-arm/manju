@@ -14,7 +14,7 @@ if (!isset($_POST['id'])) {
     $tech_id = $_POST['tech_id'];
     try {
         // Prepare and execute the SQL query
-        $result = query("SELECT imi_number, tech_id, invoice_no, mpo_name, card_number, id, sale_status FROM sales WHERE id > '$id' AND tech_id = '$tech_id'",'../../');
+        $result = query("SELECT * FROM sales WHERE id > '$id' AND tech_id = '$tech_id'",'../../');
     
         // Fetch the results and create an array
         $result_array = array();
