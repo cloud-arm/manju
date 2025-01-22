@@ -1,5 +1,4 @@
 <?php
-include("../../connect.php");
 include("../../config.php");
 include('../log.php');
 header("Access-Control-Allow-Origin: *");
