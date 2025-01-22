@@ -41,18 +41,6 @@ foreach ($sales_list as $list) {
                 $con = $row['id'];
             }
 
-            // //get the branch id from mpo id
-            // $result = query("SELECT branch_id,name FROM employee WHERE id = '$mpo_id'",'../../');
-            // for ($i = 0; $row = $result->fetch(); $i++) {
-            //     $branch_id = $row['branch_id'];
-            //     $mpo_name = $row['name'];
-            // }
-
-            // $result1 = query("SELECT product_name FROM products WHERE id = '$product_id'",'../../');
-            // for ($i = 0; $row = $result1->fetch(); $i++) {
-            //     $product_name = $row['product_name'];
-            // }
-
             if ($con == 0) {
 
                 // insert query

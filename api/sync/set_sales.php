@@ -61,11 +61,16 @@ foreach ($sales_list as $list) {
             }
 
             if ($con == 0) {
+                //get the technision name
+                $result = query("SELECT name FROM employee WHERE id = '$tech_id'",'../../');
+                for ($i = 0; $row = $result->fetch(); $i++) {
+                    $tech_name = $row['name'];
+                }
 
                 // insert query
-                $sql = "INSERT INTO sales (product_id,imi_number,tech_id,pay_type,date,time,amount,down_payment,balance,nic,app_id,sync_date,sync_time,invoice_no,emp_id,branch_id,emp_name,product_name,card_number,sale_status,emp_type) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO sales (product_id,imi_number,tech_id,pay_type,date,time,amount,down_payment,balance,nic,app_id,sync_date,sync_time,invoice_no,emp_id,branch_id,emp_name,product_name,card_number,sale_status,emp_type,tech_name) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($product_id, $imi_number, $tech_id, $pay_type, $date, $time, $amount, $down_payment, $balance, $nic, $app_id, $sync_date, $sync_time, $invoice_no, $emp_id, $branch_id, $emp_name, $product_name, $card_number,"pending",$emp_type));
+                $ql->execute(array($product_id, $imi_number, $tech_id, $pay_type, $date, $time, $amount, $down_payment, $balance, $nic, $app_id, $sync_date, $sync_time, $invoice_no, $emp_id, $branch_id, $emp_name, $product_name, $card_number,"pending",$emp_type,$tech_name));
 
                 $sql1 = "UPDATE branch_stock  SET qty = qty - ? WHERE product_id = ?";
                 $q = $db->prepare($sql1);
