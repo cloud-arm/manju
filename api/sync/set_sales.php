@@ -48,7 +48,7 @@ foreach ($sales_list as $list) {
             }
 
             //get the branch id from mpo id
-            $result = query("SELECT branch_id,name FROM employee WHERE id = '$emp_id'",'../../');
+            $result = query("SELECT branch_id,name,des FROM employee WHERE id = '$emp_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $branch_id = $row['branch_id'];
                 $emp_name = $row['name'];
