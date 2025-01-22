@@ -23,7 +23,7 @@ foreach ($sales_list as $list) {
         //------------------------------------------------------------------------------//
         try {
             // get sales id
-            $result = query("SELECT sale_status FROM sales WHERE app_id='$app_id'",'../../');
+            $result = query("SELECT sale_status,app_id FROM sales WHERE app_id='$app_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $sale_status = $row['sale_status'];
                 $ap_id = $row['app_id'];
