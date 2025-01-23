@@ -70,11 +70,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                                     onchange="pro_select()" style="width: 100%;" tabindex="1" autofocus>
                                                     <?php
                                                         // Fetch and display product options from the database
-                                                        $result = select_query("SELECT * FROM materials");
+                                                        $result = select_query("SELECT * FROM products");
                                                         while ($row = $result->fetch()) {
                                                             $mat_id = $raw['id'] ?>
                                                                         <option value="<?php echo $row['id']; ?>">
-                                                                            <?php echo $row['name']; ?>
+                                                                            <?php echo $row['product_name']; ?>
                                                                         </option>
                                                                         <?php } ?>
                                                 </select> 

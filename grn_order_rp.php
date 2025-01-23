@@ -272,6 +272,10 @@ date_default_timezone_set("Asia/Colombo");
                                       echo '<span class="badge bg-blue">Approve by Account</span>'; 
                                      }elseif($r0['approve']=='approve' && $r0['action']=='4'){
                                       echo '<span class="badge bg-blue">Approve by Stores</span>'; 
+                                     }elseif($r0['approve']=='approve' && $r0['action']=='5'){
+                                      echo '<span class="badge bg-blue">GRN Create</span>'; 
+                                     }elseif($r0['approve']=='approve by branch' && $r0['action']=='6'){
+                                      echo '<span class="badge bg-blue">Order Complete</span>'; 
                                      }elseif($r0['approve']=='reject'){
                                       echo '<span class="badge bg-red">Order Reject</span>'; 
                                      }else{

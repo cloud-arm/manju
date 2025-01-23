@@ -42,11 +42,16 @@ foreach ($sales_list as $list) {
             }
 
             if ($con == 0) {
+                //get technision name
+                $result = query("SELECT * FROM employee WHERE id = '$tech_id'",'../../');
+                for ($i = 0; $row = $result->fetch(); $i++) {
+                    $tech_name = $row['name'];
+                }
 
                 // insert query
-                $sql = "INSERT INTO fix (imi_no,project_number,date,time,tds_value,water_source,nic,app_id,sync_date,sync_time,tech_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO fix (imi_no,project_number,date,time,tds_value,water_source,nic,app_id,sync_date,sync_time,tech_id,tech_name) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($imi_no, $project_number, $date, $time, $tds_value, $water_source, $nic, $app_id, $sync_date, $sync_time, $tech_id));
+                $ql->execute(array($imi_no, $project_number, $date, $time, $tds_value, $water_source, $nic, $app_id, $sync_date, $sync_time, $tech_id, $tech_name));
 
                 $sql1 = "UPDATE sales SET sale_status = ? WHERE imi_number = ? AND card_number = ?";
                 $q = $db->prepare($sql1);

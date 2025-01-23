@@ -70,16 +70,16 @@ $_SESSION['SESS_FORM'] = 'index';
                                         $badgeStyle = 'color: white; padding: 5px 20px; border-radius: 30px; display: inline-flex; align-items: center; justify-content: center; margin-top: 10px; font-size: 1.2rem;';
                                         $backgroundColor = '#7393B3'; // Default background color
 
-                                        if ($status == 1) {
+                                        if ($status_id == 1) {
                                             $icon = 'fas fa-check-circle';
                                             $backgroundColor = '##ffc107'; // yellow for approve
-                                        } elseif ($status == 2) {
+                                        } elseif ($status_id == 2) {
                                             $icon = 'fas fa-print';
                                             $backgroundColor = '#007bff'; // Blue for printing
-                                        } elseif ($status == 3) {
+                                        } elseif ($status_id == 3) {
                                             $icon = 'fas fa-palette';
                                             $backgroundColor = '#17a2b8'; // Coral for artwork
-                                        } elseif ($status == 4) {
+                                        } elseif ($status_id == 4) {
                                             $icon = 'fas fa-exclamation-circle';
                                             $backgroundColor = '#ffc107'; // Yellow for pending
                                         } 
@@ -217,7 +217,7 @@ $_SESSION['SESS_FORM'] = 'index';
                                     </a>
                                     <?php endif; ?>
 
-                                    <?php if ($approved != 5 && $approved != 20): ?>
+                                    <?php if ($approved != 1 && $approved != 20): ?>
                                     <!-- Hide edit button only when approved is 5 -->
                                     <a class="btn btn-danger" onclick="edit_note(<?php echo $row['id']; ?>)">
                                         <i class="fas fa-times-circle"></i>
@@ -757,11 +757,11 @@ $_SESSION['SESS_FORM'] = 'index';
                                             <label>Vehicle List</label>
                                             <select class="form-control select2" name="vehicle_id" style="width: 100%;" required>
                                                 <?php
-                                                    $result = query("SELECT * FROM vehicle");
+                                                    $result = query("SELECT * FROM vehicles");
                                                     while ($row = $result->fetch()) {
                                                 ?>
                                                 <option value="<?php echo $row['id']; ?>">
-                                                    <?php echo $row['vehicle_no']; ?>
+                                                    <?php echo $row['number']; ?>
                                                 </option>
                                                 <?php } ?>
                                             </select>
