@@ -11,24 +11,21 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 $json_data = file_get_contents('php://input');
 
 // get values
-$sales_list = json_decode($json_data, true);
+$cash_list = json_decode($json_data, true);
 
 // respond init
 $result_array = array();
 
-foreach ($sales_list as $list) {
+foreach ($cash_list as $list) {
 
-    $imi_no = $list['imi_no'];
-    $project_number = $list['project_number'];
-    $date = $list['date'];
-    $time = $list['time'];
-    $tds_value = $list['tds_value'];
-    $water_source = $list['water_source'];
-    $nic = $list['nic'];
-    $tech_id = $list['tech_id'];
+    $emp_id = $list['emp_id'];
+    $emp_name = $list['emp_name'];
+    $emp_type = $list['emp_type'];
+    $balance = $list['balance'];
+    $last_update = $list['last_update'];
 
     $app_id = $list['id'];
-
+   
     $sync_date = date('Y-m-d');
     $sync_time = date('H:i:s');
 
@@ -36,25 +33,24 @@ foreach ($sales_list as $list) {
         try {
             //checking duplicate
             $con = 0;
-            $result = query("SELECT * FROM fix WHERE imi_no = '$imi_no' AND project_number = '$project_number'",'../../');
-            for ($i = 0; $row = $result->fetch(); $i++) {
-                $con = $row['id'];
+            $result = query("SELECT * FROM cash_account WHERE emp_id = '$emp_id' AND app_id = '$app_id'",'../../');
+
+            if ($result instanceof PDOStatement) {
+                if ($result->rowCount() > 0) {
+                    $con = $result->rowCount();
+                }
             }
 
             if ($con == 0) {
 
-                // insert query
-                $sql = "INSERT INTO fix (imi_no,project_number,date,time,tds_value,water_source,nic,app_id,sync_date,sync_time,tech_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                // update query
+                $sql = "INSERT INTO cash_account (emp_id,emp_name,emp_type,balance,last_update,sync_date,sync_time,app_id) VALUES (?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($imi_no, $project_number, $date, $time, $tds_value, $water_source, $nic, $app_id, $sync_date, $sync_time, $tech_id));
-
-                $sql1 = "UPDATE sales SET sale_status = ? WHERE imi_number = ? AND card_number = ?";
-                $q = $db->prepare($sql1);
-                $q->execute(array("fixed", $imi_no, $project_number, ));
+                $ql->execute(array($emp_id, $emp_name, $emp_type, $balance, $last_update, $sync_date, $sync_time, $app_id));
             }
 
-            // get sales list id
-            $result = query("SELECT * FROM fix WHERE app_id='$app_id'",'../../');
+            // get credit list id
+            $result = query("SELECT * FROM cash_account WHERE app_id='$app_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];

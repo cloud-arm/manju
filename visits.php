@@ -162,6 +162,7 @@ date_default_timezone_set("Asia/Colombo");
                                 <th>NIC</th>
                                 <th>TDS Value</th>
                                 <th>Date</th>
+                                <th>@</th>
 
                             
                             </tr>
@@ -186,6 +187,9 @@ date_default_timezone_set("Asia/Colombo");
                                 <td><?php echo $r0['nic'];  ?></td>
                                 <td><?php echo $r0['tds_value'];  ?></td>
                                 <td><?php echo $r0['date'];  ?></td>
+                                <td>
+                                    <a href="progres.php?nic=<?php echo $r0['nic']; ?>" class="btn btn-primary">View</a>
+                                </td>
 
 
                             </tr>

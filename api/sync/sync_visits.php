@@ -1,4 +1,5 @@
 <?php
+include("../../connect.php");
 include("../../config.php");
 include('../log.php');
 header("Access-Control-Allow-Origin: *");
@@ -11,15 +12,18 @@ if (!isset($_POST['id'])) {
     exit();
 }else{
     $id = $_POST['id'];
-    $tech_id = $_POST['tech_id'];
     try {
         // Prepare and execute the SQL query
-        $result = query("SELECT * FROM sales WHERE id > '$id' AND tech_id = '$tech_id'",'../../');
+        $result = query("SELECT * FROM visit WHERE id > '$id'",'../../');
     
         // Fetch the results and create an array
         $result_array = array();
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $result_array[] = $row;
+        if ($result instanceof PDOStatement) {
+            if ($result->rowCount() > 0) {
+                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                    $result_array[] = $row;
+                }
+            }
         }
     
         // Encode the array into JSON and output it

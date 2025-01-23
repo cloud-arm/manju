@@ -11,15 +11,19 @@ if (!isset($_POST['id'])) {
     exit();
 }else{
     $id = $_POST['id'];
-    $tech_id = $_POST['tech_id'];
+    $recovery_id = $_POST['recovery_id'];
     try {
         // Prepare and execute the SQL query
-        $result = query("SELECT * FROM sales WHERE id > '$id' AND tech_id = '$tech_id'",'../../');
+        $result = query("SELECT * FROM recovery_stock WHERE id > '$id' AND recovery_officer_id = '$recovery_id'",'../../');
     
         // Fetch the results and create an array
         $result_array = array();
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $result_array[] = $row;
+        if ($result instanceof PDOStatement) {
+            if ($result->rowCount() > 0) {
+                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                    $result_array[] = $row;
+                }
+            }
         }
     
         // Encode the array into JSON and output it
