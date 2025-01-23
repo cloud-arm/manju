@@ -15,4 +15,4 @@ $result = update(
 );
 
 //echo $result['status'];
-header("location: ../branch_view?id=$id");
+header("location: ../branch_view?id=$branch_id");

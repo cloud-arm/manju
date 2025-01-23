@@ -87,14 +87,14 @@ if (!empty($dates)) {
             <thead>
     <tr>
         <th>Date</th>
-        <th>product name</th>
+        <th>Product name</th>
         <th>Imi number</th>
-        <th>pay_type</th>
-        <th>amount</th>
-        <th>down_payment</th>
-        <th>balance</th>
-        <th>nic</th>
-        <th>mpo_name</th>
+        <th>Pay type</th>
+        <th>Amount</th>
+        <th>Down payment</th>
+        <th>Balance</th>
+        <th>Nic</th>
+        <th>Employee name</th>
 
     </tr>
 </thead>
@@ -118,7 +118,7 @@ if (!empty($dates)) {
             <td><?php echo ($row['down_payment']); ?></td>
             <td><?php echo ($row['balance']); ?></td>
             <td><?php echo ($row['nic']); ?></td>
-            <td><?php echo ($row['mpo_name']); ?></td>
+            <td><?php echo ($row['emp_name']); ?></td>
 
 
 

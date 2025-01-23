@@ -11,6 +11,24 @@ $_SESSION['SESS_FORM'] = 'index';
 $user_level = $_SESSION['USER_LEWAL'];
 ?>
 
+<script>
+    function setProject(pro){
+        console.log("working model .! "+pro);
+        const inputField = document.getElementById("proInput");
+        inputField.value = pro;
+
+        var modal = document.getElementById("myModal");
+        modal.classList.remove("d-none");
+    }
+
+    function closeModal(){
+        var modal = document.getElementById("myModal");
+        modal.classList.remove("d-block");
+        modal.classList.add("d-none");
+    }
+        
+</script>
+
 <body class="hold-transition skin-yellow skin-orange sidebar-mini">
 
     <?php include_once("start_body.php"); ?>
@@ -43,20 +61,20 @@ $user_level = $_SESSION['USER_LEWAL'];
                     $branch_id = $row["branch_id"];
                 }
 
-                $result1 = query("SELECT COUNT(*) AS total_visit FROM visit WHERE branch_id = '$branch_id'");
+                $result1 = query("SELECT COUNT(*) AS job_count FROM credit WHERE recovery_officer_id = '0'");
                 for ($i = 0; $row = $result1->fetch(); $i++) {
-                    $visit_count = $row["total_visit"];
+                    $job_count = $row["job_count"];
                 }
             ?>
 
             <div class="row">
-                <div class="col-sm-6 col-md-4 col-xs-12">
+                <div class="col-sm-6 col-md-3 col-xs-12">
 
                     <div class="info-box">
                         <span class="info-box-icon"><i class="fa fa-file-text"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Total Visit</span>
-                           <a href="visits.php"><span class="info-box-number"><?php echo $visit_count ?></span></a> 
+                            <span class="info-box-text">Not Assigned Project</span>
+                           <a href=""><span class="info-box-number"><?php echo $job_count ?></span></a> 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
                             </div>
@@ -65,12 +83,12 @@ $user_level = $_SESSION['USER_LEWAL'];
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-4 col-xs-12">
+                <div class="col-sm-6 col-md-3 col-xs-12">
 
                     <div class="info-box">
                         <span class="info-box-icon"><i class="fa fa-building"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">BRANCH</span>
+                            <span class="info-box-text">Assigned And Running</span>
                             <span class="info-box-number">0</span>
                             <div class="progress">
                                 
@@ -81,7 +99,23 @@ $user_level = $_SESSION['USER_LEWAL'];
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-4 col-xs-12">
+                <div class="col-sm-6 col-md-3 col-xs-12">
+
+                    <div class="info-box">
+                        <span class="info-box-icon"><i class="fa fa-shopping-cart"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">RETAIL</span>
+                            <span class="info-box-number">0</span>
+                            <div class="progress">
+                                
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-3 col-xs-12">
 
                     <div class="info-box">
                         <span class="info-box-icon"><i class="fa fa-shopping-cart"></i></span>
@@ -100,52 +134,95 @@ $user_level = $_SESSION['USER_LEWAL'];
                 
             </div>
 
-   
+   <!-- Modal content -->
+   <div id="myModal" class="d-none">
+        
+        <div style="position: relative; border-radius: 8px;">
+
+        <button 
+            onclick="closeModal()" 
+            style="
+                position: absolute; 
+                top: 10px; 
+                right: 10px; 
+                background: transparent; 
+                border: none; 
+                font-size: 20px; 
+                cursor: pointer;"
+        >
+            &times;
+        </button>
+
+            <form method="post" action="recovery_officer_assign.php" style="width: 30%;">
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <h3>Officer Name</h3>
+                                <select class="form-control select2" name="reco" style="width: 100%;" autofocus>
+                                    <?php
+                                    $result = query("SELECT * FROM employee ");
+                                    
+                                    for ($i = 0; $row = $result->fetch(); $i++) {
+                                    ?>
+                                        <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?>
+                                        </option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="btn btn-info" type="submit" value="Save" style="margin-top: 55%;">
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box -->
+                <input type="hidden" id="proInput" name="project" value="">
+            </form>
+        </div>
+    </div>
   
 
-            <div class="box">
-   
-
+<div class="box">
     <!-- Job List Table -->
     <div class="box-body">
         <table id="example1" class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Employee Name</th>
-                    <th>Product Name</th>
-                    <th>IMI Number</th>
-                    <th>Date</th>
-                    <th>Pay Type</th>
-                    <th>Amount</th>
+                    <th>Credit Amount</th>
+                    <th>Number Of Installment</th>
+                    <th>Project Number</th>
+                    <th>TDS Value</th>
+                    <th>Customer Satisfaction</th>
                     <th>#</th>
                 </tr>
             </thead>
 
             <tbody>
             <?php 
-                $result = query("SELECT * FROM sales WHERE branch_id = '$branch_id' ORDER By id DESC");
+                $result = query("SELECT * FROM credit WHERE recovery_officer_id = '0'");
                 for ($i = 0; $row = $result->fetch(); $i++) {
-                    $mpo_name = $row['emp_name'];
-                    $product_name = $row['product_name'];
-                    $imi_no = $row['imi_number'];
-                    $date = $row['date'];
-                    $pay_type = $row['pay_type'];
-                    $payment = $row['amount'];
-                    $project_number = $row['card_number'];
+                    $credit_amount = $row['credit_amount'];
+                    $no_of_installments = $row['no_of_installments'];
+                    $project_number = $row['project_number'];
+                    $tds_value = $row['tds_value'];
+                    $positive = $row['positive'];
             ?>
                 <tr>
                 <td><?php echo $i+1; ?></td>
-                <td><?php echo $mpo_name; ?></td>
-                <td><?php echo $product_name; ?></td>
-                <td><?php echo $imi_no; ?></td>
-                <td><?php echo $date; ?></td>
-                <td><?php echo $pay_type; ?></td>
-                <td><?php echo $payment; ?></td>
+                <td><?php echo $credit_amount; ?></td>
+                <td><?php echo $no_of_installments; ?></td>
+                <td><?php echo $project_number; ?></td>
+                <td><?php echo $tds_value; ?></td>
+                <td><?php echo $positive; ?></td>
                 <td>
-                    <a class="btn btn-danger" href="progres.php?nic=<?php echo $row['nic']; ?>">
-                    <i class="fas fa-eye"></i>
-                    </a>
+                    <button id="myBtn" class="btn btn-info" onclick="setProject(<?php echo $project_number; ?>)">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </button>
                 </td>
                 </tr>
             <?php } ?>

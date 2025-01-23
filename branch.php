@@ -154,8 +154,19 @@ $user_level = $_SESSION['USER_LEWAL'];
                                 <div class="form-group">
                                     <label>District</label>
                                     <select class="form-control select2 hidden-search" name="district" id="c_id" style="width: 100%;">
-                                        <option value="galle">Galle</option>
-                                        <option value="colombo">Colombo</option>
+                                        
+                                    <?php
+                                                $result = query("SELECT * FROM district ");
+		                                        
+		                                        for($i=0; $row = $result->fetch(); $i++){
+	                                          ?>
+                                                <option value="<?php echo $row['id'];?>">
+                                                    <?php echo $row['district_name']; ?>
+                                                </option>
+                                                <?php
+				                                    }
+			                                        ?>
+
                                     </select>
                                 </div>
                                 <input type="hidden" name="unit" value="1">
@@ -185,6 +196,8 @@ $user_level = $_SESSION['USER_LEWAL'];
 
     <!-- DataTables -->
     <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+    <!-- Select2 -->
+    <script src="../../plugins/select2/select2.full.min.js"></script>
     <script src="../../plugins/datatables/dataTables.bootstrap.min.js"></script>
     <!-- SlimScroll -->
     <script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
@@ -221,6 +234,9 @@ $user_level = $_SESSION['USER_LEWAL'];
 
         
     $(function() {
+        //Initialize Select2 Elements
+        $(".select2").select2();
+
         $("#example1").DataTable();
         $('#example2').DataTable({
             "paging": true,

@@ -21,8 +21,9 @@ $_SESSION['SESS_FORM'] = 'index';
             <?php
             $nic = ($_GET['nic']);
             $result = select('sales', '*', 'nic=' . $nic);
+            
             if ($row = $result->fetch()) {
-
+                $pro_id = $row['product_id'];
             } else {
                 // Handle case where no data is found
                 $location = $width = $height = $product_name = 'N/A';
@@ -50,17 +51,21 @@ $_SESSION['SESS_FORM'] = 'index';
 
 
 
+                            <?php 
+                            $result4 = select('products', '*', 'id=' . $pro_id);
+                            if ($row = $result4->fetch()) { // Corrected $result4 usage
+                                $product_id = $row['id'];
+                                $product_nm = $row['product_name'];
+                                $cat = $row['cat'];
+                            }
+                            ?>
 
-
-
-
-
-
-                                    <div class="text-center" style="margin-top: 20px;">
-                                        <h5>If you wish to delete this job process without adding details, click the
-                                            button below:</h5>
-
-                                    </div>
+                            <div class="card shadow-sm" style="margin-top: 20px; border-radius: 15px; background-color: #f9f9f9; padding: 20px;">
+                                <div class="card-body text-center">
+                                    <h4 class="card-title" style="font-weight: bold; color: #333;"><?php echo $product_nm; ?></h4>
+                                    <p class="card-text" style="font-size: 1.2rem; color: #666;">Category: <?php echo $cat; ?></p>
+                                </div>
+                            </div>
 
 
 
@@ -171,7 +176,7 @@ $_SESSION['SESS_FORM'] = 'index';
 
                     <div class="col-md-12" align="center">
                         <button class="btn btn-info" style="width: 150px; height: 25px; font-size: 10px; "
-                            onclick="window.location.href='visits.php'">
+                            onclick="window.location.href='index.php'">
                             Back
                         </button>
                     </div>
@@ -228,7 +233,7 @@ $_SESSION['SESS_FORM'] = 'index';
                                         <p>visits done by:</p>
                                         <p><strong>Adress:</strong> <?php echo $address ?>, <strong>phone:</strong>
                                             <?php echo $phone ?>, <strong>nic:</strong> <?php echo $nic ?></p>
-                                        <p><strong class="text-primary"> name:</strong>
+                                        <p><strong class="text-primary">Customer name:</strong>
                                             <?php echo $name ?></p>
 
                                     </div>
@@ -282,9 +287,9 @@ $_SESSION['SESS_FORM'] = 'index';
             $invoice_no = $row['invoice_no'];
             $nic = $row['nic'];
             $date = $row['date'];
-            $mpo_name = $row['mpo_name'];
+            $mpo_name = $row['emp_name'];
             $time = $row['time'];
-            $product_name = $row['product_id'];
+            $product_name = $row['product_name'];
             $pay_type = $row['pay_type'];
             $card_number = $row['card_number'];
         }
@@ -341,7 +346,7 @@ $_SESSION['SESS_FORM'] = 'index';
         $water_source = $row['water_source'];
         $nic = $row['nic'];
         $date = $row['date'];
-        $tech_id = $row['tech_id'];
+        $tech_name = $row['tech_name'];
         $time = $row['time'];
     }
     ?>
@@ -375,7 +380,7 @@ $_SESSION['SESS_FORM'] = 'index';
                     <p><strong>Water Source:</strong> <?php echo htmlspecialchars($water_source); ?></p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Technician ID:</strong> <?php echo htmlspecialchars($tech_id); ?></p>
+                    <p><strong>Technician :</strong> <?php echo htmlspecialchars($tech_name); ?></p>
                 </div>
             </div>
         </div>

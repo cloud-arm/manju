@@ -17,9 +17,10 @@ date_default_timezone_set("Asia/Colombo");
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
+
         <section class="content-header">
             <h1>
-                Order
+                Visit
                 <small>Report</small>
             </h1>
         </section>
@@ -28,7 +29,7 @@ date_default_timezone_set("Asia/Colombo");
         <section class="content">
 
             <div class="row">
-                <div class="col-sm-6 col-md-4 col-xs-12">
+                <div class="col-sm-6 col-md-4 col-xs-12" style="margin: 20px 0;">
                     <div class="info-box">
                         <span class="info-box-icon"><i class="fa fa-file-text"></i></span>
                         <div class="info-box-content">
@@ -37,7 +38,14 @@ date_default_timezone_set("Asia/Colombo");
                                 <?php 
                         $totalCount = 0; // Initialize total count for retail jobs
 
-                        $salesResult = select('visit', 'COUNT(id) AS total1', '');
+                        
+                        $user_id = $_SESSION['USER_EMPLOYEE_ID'];
+                        $result = query("SELECT branch_id FROM employee WHERE id = '$user_id'");
+                        for ($i = 0; $row = $result->fetch(); $i++) {
+                            $branch_id = $row["branch_id"];
+                        }
+
+                        $salesResult = select('visit', 'COUNT(id) AS total1', "branch_id = '$branch_id'");
                         if ($salesResult) {
                             $salesRow = $salesResult->fetch();
                             if ($salesRow) {
@@ -57,89 +65,52 @@ date_default_timezone_set("Asia/Colombo");
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-4 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon"><i class="fa fa-file-text"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Today Removal Item Quantity</span>
-                            <span class="info-box-number">
-                                <?php 
-                $totalCount2 = 0; // Initialize total count for IDs
-                $totalQuantity = 0; // Initialize total quantity for items removed
+                <div class="col-sm-6 col-md-8 col-xs-12">
+                    <div class="row">
+                    <div class="col-md-1"></div>
+                        <div class="col-md-8">
+                            <div class="box">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Date Selector</h3>
+                                </div>
+                                <div class="box-body">
+                                    <form action="" method="GET">
+                                        <div class="row" style="margin-bottom: 20px; display: flex; align-items: end;">
+                                            <div class="col-lg-1"></div>
+                                            <div class="col-lg-5">
+                                                <label>Date range:</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                                    <input type="text" class="form-control pull-right" id="reservation" name="dates" value="<?php echo isset($_GET['dates']) ? $_GET['dates'] : '';?>">
+                                                </div>
+                                            </div>
 
-                $currentDate = date('Y-m-d');
-                // Modify the query to get both the count of IDs and the sum of quantities
-                $salesResult = select('inventory', 'COUNT(id) AS total2, SUM(qty) AS totalQuantity', 'type = "out" AND DATE(date) = "' . $currentDate . '"');
-                
-                if ($salesResult) {
-                    $salesRow = $salesResult->fetch();
-                    if ($salesRow) {
-                        $totalCount2 = $salesRow['total2']; // Total count of IDs
-                        $totalQuantity = $salesRow['totalQuantity']; // Total quantity removed
-                    }
-                }
-
-                echo number_format($totalCount2); // Display the total ID count with formatting
-                ?>
-                            </span>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 0%"></div>
+                                            <div class="col-lg-2">
+                                                <input type="submit" class="btn btn-info" value="Apply">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                            <span class="progress-description">
-                                <?php echo "Total Quantity Removed Today: " . number_format($totalQuantity); ?>
-                            </span>
                         </div>
                     </div>
                 </div>
-
-
-                <div class="col-sm-6 col-md-4 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon"><i class="fa fa-file-text"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total GRN</span>
-                            <span class="info-box-number">
-                                <?php 
-                              $totalCount2 = 0; // Initialize total count for corporate jobs
-
-                        $salesResult = select('purchases_list', 'SUM(id) AS total2', 'approve = 1 AND type = "GRN"');
-                        if ($salesResult) {
-                            $salesRow = $salesResult->fetch();
-                            if ($salesRow) {
-                                $totalCount2 += $salesRow['total2']; // Accumulate the count
-                            }
-                        }
-                    
-                
-                        echo number_format($totalCount2); // Display the total corporate jobs with two decimal places
-                        ?>
-                            </span>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 0%"></div>
-                            </div>
-                            <span class="progress-description"> available</span>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-
-
-
-
-
             </div>
-
-
-            <!-- All jobs -->
 
             <?php
       include("connect.php");
       date_default_timezone_set("Asia/Colombo");
 
-
+      $dates = isset($_GET['dates']) ? $_GET['dates'] : '';
+      // Default date range filter
+      $d1 = '';
+      $d2 = '';
+      
+      if (!empty($dates)) {
+          list($start_date, $end_date) = explode(" - ", $dates);
+          $d1 = date("Y-m-d", strtotime($start_date));
+          $d2 = date("Y-m-d", strtotime($end_date));
+      }
 
 
 
@@ -160,6 +131,7 @@ date_default_timezone_set("Asia/Colombo");
                                 <th>Address</th>
                                 <th>Phone No</th>
                                 <th>NIC</th>
+                                <th>Employee</th>
                                 <th>TDS Value</th>
                                 <th>Date</th>
                                 <th>@</th>
@@ -174,7 +146,7 @@ date_default_timezone_set("Asia/Colombo");
               $bill_total = 0;
              
 
-                $re = select_query("SELECT * FROM `visit`");
+                $re = select_query("SELECT * FROM `visit` WHERE date BETWEEN '$d1' AND '$d2'");
                 for ($i = 0; $r0 = $re->fetch(); $i++) {
                  
               ?>
@@ -185,6 +157,7 @@ date_default_timezone_set("Asia/Colombo");
                                 <td><?php echo $r0['address'];  ?></td>
                                 <td><?php echo $r0['phone'];  ?></td>
                                 <td><?php echo $r0['nic'];  ?></td>
+                                <td><?php echo $r0['employee'];  ?></td>
                                 <td><?php echo $r0['tds_value'];  ?></td>
                                 <td><?php echo $r0['date'];  ?></td>
                                 <td>
