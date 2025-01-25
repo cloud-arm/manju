@@ -52,7 +52,7 @@ foreach ($sales_list as $list) {
             }
 
             // get sales list id
-            $result = query("SELECT * FROM fix WHERE app_id='$app_id'",'../../');
+            $result = query("SELECT * FROM recovery_reasons_record WHERE app_id='$app_id'",'../../');
             for ($i = 0; $row = $result->fetch(); $i++) {
                 $id = $row['id'];
                 $ap_id = $row['app_id'];
