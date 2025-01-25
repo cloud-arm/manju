@@ -1,5 +1,4 @@
 <?php
-include("../../connect.php");
 include("../../config.php");
 include('../log.php');
 header("Access-Control-Allow-Origin: *");
@@ -14,7 +13,7 @@ if (!isset($_POST['id'])) {
     $id = $_POST['id'];
     try {
         // Prepare and execute the SQL query
-        $result = query("SELECT * FROM credit WHERE id > '$id'",'../../');
+        $result = query("SELECT * FROM recovery_reasons WHERE id > '$id'",'../../');
     
         // Fetch the results and create an array
         $result_array = array();
