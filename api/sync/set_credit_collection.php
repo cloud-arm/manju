@@ -24,6 +24,8 @@ foreach ($collection_list as $list) {
     $project_number = $list['project_number'];
     $default_value = $list['default_value'];
     $balance = $list['balance'];
+    $lat = $list['lat'];
+    $lon = $list['lon'];
 
     $app_id = $list['id'];
    
@@ -45,9 +47,9 @@ foreach ($collection_list as $list) {
             if ($con == 0) {
 
                 // insert query
-                $sql = "INSERT INTO credit_collection (amount,pay_date,recovery_id,project_number,default_value,app_id,sync_date,sync_time,balance) VALUES (?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO credit_collection (amount,pay_date,recovery_id,project_number,default_value,app_id,sync_date,sync_time,balance,lat,lon) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($amount, $pay_date, $recovery_id, $project_number, $default_value, $app_id, $sync_date, $sync_time, $balance));
+                $ql->execute(array($amount, $pay_date, $recovery_id, $project_number, $default_value, $app_id, $sync_date, $sync_time, $balance, $lat, $lon));
             }
 
             // get credit collection list id
