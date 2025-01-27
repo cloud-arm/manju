@@ -10,7 +10,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Retrieve the transaction ID from the POST data
 
 
-if (!isset($_POST['id'])) {
+if (!isset($_POST['user_id'])) {
     echo json_encode(array("message" => "Error: Missing parameters."));
     exit();
 }else{
