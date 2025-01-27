@@ -14,10 +14,21 @@ if (!isset($_POST['id'])) {
     echo json_encode(array("message" => "Error: Missing parameters."));
     exit();
 }else{
-    $id = $_POST['id'];
+    $user_id = $_POST['user_id'];
     try {
+        // get employee id
+        $result0 = query("SELECT employee_id FROM user WHERE id='$user_id'",'../');
+        for ($i = 0; $row = $result0->fetch(); $i++) {
+            $emp_id = $row['employee_id'];
+        }
+
+        // get branch id
+        $result1 = query("SELECT branch_id FROM employee WHERE id='$emp_id'",'../');
+        for ($i = 0; $row = $result1->fetch(); $i++) {
+            $branch_id = $row['branch_id'];
+        }
         // Prepare and execute the SQL query
-        $result = query("SELECT product_code, product_name, price, qty, id FROM products WHERE id > '$id' ",'../');
+        $result = query("SELECT * FROM branch_stock WHERE branch_id = '$branch_id' ",'../');
     
         // Fetch the results and create an array
         $result_array = array();

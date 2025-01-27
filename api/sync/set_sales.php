@@ -83,9 +83,9 @@ foreach ($sales_list as $list) {
                 $ql = $db->prepare($sql);
                 $ql->execute(array($product_id, $imi_number, $tech_id, $pay_type, $date, $time, $amount, $down_payment, $balance, $nic, $app_id, $sync_date, $sync_time, $invoice_no, $emp_id, $branch_id, $emp_name, $product_name, $card_number,"pending",$emp_type,$tech_name,$lat,$lon,$name));
 
-                $sql1 = "UPDATE branch_stock  SET qty = qty - ? WHERE product_id = ?";
+                $sql1 = "UPDATE branch_stock  SET qty = qty - ? WHERE product_id = ? AND branch_id = ?";
                 $q = $db->prepare($sql1);
-                $q->execute(array(1, $product_id));
+                $q->execute(array(1, $product_id, $branch_id));
 
                 $sql2 = "INSERT INTO payment (pay_type, amount, date, time, invoice_no, credit_balance, down_payment) VALUES (?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql2);
@@ -100,6 +100,10 @@ foreach ($sales_list as $list) {
                 $sql4 = "INSERT INTO customer (name, address, contact, nic) VALUES (?,?,?,?)";
                 $ql = $db->prepare($sql4);
                 $ql->execute(array($name, $address, $phone, $nic));
+
+                $sql5 = "UPDATE imi_no  SET status = ? WHERE imi_no = ?";
+                $q = $db->prepare($sql5);
+                $q->execute(array("Sale", $imi_number));
             }
 
             // get sales id
