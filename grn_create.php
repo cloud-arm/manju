@@ -22,6 +22,7 @@ while ($row = $r1->fetch()) {
     $product_id = $row['product_id'];
     $product_name = $row['name'];
     $qty = $row['qty'];
+    $branch_id = $row['branch_id'];
 }
 
 $r2 = select_query("SELECT * FROM branch_stock WHERE product_id='$product_id' ");
@@ -37,9 +38,9 @@ if ($r2 && $r2->rowCount() > 0) {
     );
 } else {
     // No records found
-    $sql = "INSERT INTO branch_stock (product_id,product_name,qty) VALUES (?,?,?)";
+    $sql = "INSERT INTO branch_stock (product_id,product_name,qty,branch_id) VALUES (?,?,?,?)";
     $ql = $db->prepare($sql);
-    $ql->execute(array($product_id,$product_name,$qty));
+    $ql->execute(array($product_id,$product_name,$qty,$branch_id));
 }
 
 $sql = "INSERT INTO branch_inventory_record (product_id,product_name,invoice_no,date,qty) VALUES (?,?,?,?,?)";
