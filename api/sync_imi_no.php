@@ -15,14 +15,8 @@ if (!isset($_POST['id'])) {
     exit();
 }else{
     $id = $_POST['id'];
-    $user_id = $_POST['user_id'];
+    $emp_id = $_POST['user_id'];
     try {
-        // get employee id
-        $result0 = query("SELECT employee_id FROM user WHERE id='$user_id'",'../');
-        for ($i = 0; $row = $result0->fetch(); $i++) {
-            $emp_id = $row['employee_id'];
-        }
-
         // get branch id
         $result1 = query("SELECT branch_id FROM employee WHERE id='$emp_id'",'../');
         for ($i = 0; $row = $result1->fetch(); $i++) {
