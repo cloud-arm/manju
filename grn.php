@@ -49,7 +49,7 @@ if(!isset($_GET['id'])){
                         </div>
 
                         <div class="box-body d-block">
-                            <form method="POST" action="grn_list_save.php" onsubmit="return validateForm()">
+                            <form method="POST" action="pd_grn_list_save.php" onsubmit="return validateForm()">
 
                                 <div class="row">
 
