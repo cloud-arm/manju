@@ -32,5 +32,3 @@ if ($result) {
             window.location.href='branch.php';
           </script>";
 }
-
-?>
