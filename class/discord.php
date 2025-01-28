@@ -9,7 +9,7 @@ function discord($message, $header = "", $table = '')
         $server = $_SERVER['SERVER_NAME'];
 
         if (empty($header)) {
-            $header = "Foodnet";
+            $header = "Manju dew";
         }
 
         $text = "Server => [" . $server . "]\nMessage => " . $message;
