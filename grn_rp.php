@@ -67,7 +67,7 @@ if(!isset($_GET['year'])){
       $d2 = $_GET['year'] . '-' . $_GET['month'] . '-31';
 }
 
-      $sql = " SELECT * FROM `purchases_list` WHERE type='GRN' AND date BETWEEN '$d1' AND '$d2' GROUP BY `invoice_no` ASC ";
+      $sql = " SELECT * FROM `pd_purchase_list` WHERE type='GRN' AND date BETWEEN '$d1' AND '$d2' GROUP BY `invoice_no` ASC ";
 
 
       ?>
@@ -100,7 +100,7 @@ if(!isset($_GET['year'])){
               for ($i = 0; $row = $result->fetch(); $i++) {
                 $invo = $row['invoice_no'];
 
-                $re = select_query("SELECT * FROM `purchases` WHERE invoice_no='$invo' AND dll=0 AND type='GRN' ");
+                $re = select_query("SELECT * FROM `pd_purchase` WHERE invoice_no='$invo' AND dll=0 AND type='GRN' ");
                 for ($i = 0; $r0 = $re->fetch(); $i++) {
                   $bill = $r0['amount'];
                   $pay = $r0['pay_amount'];

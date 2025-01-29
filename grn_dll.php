@@ -10,7 +10,7 @@ $username = $_SESSION['SESS_FIRST_NAME'];
 
 $err = 0;
 
-$result = $db->prepare("SELECT * FROM purchases WHERE transaction_id = :id ");
+$result = $db->prepare("SELECT * FROM pd_purchase WHERE transaction_id = :id ");
 $result->bindParam(':id', $id);
 $result->execute();
 for ($i = 0; $row = $result->fetch(); $i++) {
@@ -19,14 +19,14 @@ for ($i = 0; $row = $result->fetch(); $i++) {
     $amount = $row['amount'];
 }
 
-$result = $db->prepare("SELECT * FROM purchases_list WHERE invoice_no = :id ");
+$result = $db->prepare("SELECT * FROM pd_purchase_list WHERE invoice_no = :id ");
 $result->bindParam(':id', $invoice);
 $result->execute();
 for ($i = 0; $row = $result->fetch(); $i++) {
     $pid = $row['product_id'];
     $qty = $row['qty'];
 
-    $result1 = $db->prepare("SELECT * FROM inventory WHERE invoice_no = :id AND product_id = '$pid' ");
+    $result1 = $db->prepare("SELECT * FROM inventory WHERE invoice_no = :id AND material_id = '$pid' ");
     $result1->bindParam(':id', $invoice);
     $result1->execute();
     for ($i = 0; $row1 = $result1->fetch(); $i++) {
@@ -53,11 +53,11 @@ for ($i = 0; $row = $result->fetch(); $i++) {
 
 if ($err == 0) {
 
-    $sql = "UPDATE purchases SET dll=? WHERE transaction_id=?";
+    $sql = "UPDATE pd_purchase SET dll=? WHERE transaction_id=?";
     $q = $db->prepare($sql);
     $q->execute(array(1, $id));
 
-    $sql = "UPDATE purchases_list SET action=? WHERE invoice_no=?";
+    $sql = "UPDATE pd_purchase_list SET action=? WHERE invoice_no=?";
     $q = $db->prepare($sql);
     $q->execute(array('', $invoice));
 
@@ -72,7 +72,7 @@ if ($err == 0) {
     $result->bindParam(':id', $invoice);
     $result->execute();
     for ($i = 0; $row = $result->fetch(); $i++) {
-        $pid = $row['product_id'];
+        $pid = $row['material_id'];
         $qty = $row['qty'];
         $cost = $row['cost'];
         $sell = $row['sell'];
@@ -99,7 +99,7 @@ if ($err == 0) {
         $ql = $db->prepare($sql);
         $ql->execute(array($qty, $pid, $invoice));
 
-        $sql = "INSERT INTO inventory (product_id,name,invoice_no,type,balance,qty,date,cost,sell,stock_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO inventory (material_id,name,invoice_no,type,balance,qty,date,cost,sell,stock_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
         $ql = $db->prepare($sql);
         $ql->execute(array($pid, $name, $invoice, 'out', $qty_blc, $qty, $date, $cost, $sell, $st_id));
     }

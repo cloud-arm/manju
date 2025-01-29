@@ -112,12 +112,32 @@ if(!isset($_GET['id'])){
                                         </div>
                                     </div>
 
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <label>Unit</label>
+                                                </div>
 
+                                                <select class="form-control select2" name="unit" id="p_sel" onchange="pro_select()" style="width: 100%;" tabindex="1" autofocus>
+
+                                                    <?php
+                                                    $result = select_query("SELECT * FROM unit");
+                                                    for ($i = 0; $row = $result->fetch(); $i++) { ?>
+                                                        <option value="<?php echo $row['id']; ?>">
+                                                            <?php echo $row['name']; ?> 
+                                                        </option>
+                                                    <?php    } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <input type="hidden" name="id" value="<?php echo $invo; ?>">
                                             <input type="hidden" name="type" value="GRN">
+                                            <input type="hidden" name="id2" value="0">
                                             <input class="btn btn-warning" type="submit" value="Save">
                                         </div>
                                     </div>
@@ -137,7 +157,7 @@ if(!isset($_GET['id'])){
                                 </tr>
                                 <?php $total = 0;
                                 $style = "";
-                                $result = select_query("SELECT * FROM purchases_list WHERE invoice_no = '$invo' ");
+                                $result = select_query("SELECT * FROM pd_purchase_list WHERE invoice_no = '$invo' ");
                                 for ($i = 0; $row = $result->fetch(); $i++) {
                                     $pro_id = $row['product_id'];
 
@@ -179,7 +199,7 @@ if(!isset($_GET['id'])){
                         </div>
                         <div class="form-group">
                             <div class="box-body d-block">
-                                <form method="POST" action="grn_save.php">
+                                <form method="POST" action="pd_grn_save.php">
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
@@ -194,7 +214,7 @@ if(!isset($_GET['id'])){
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Pay Type</label>
                                                 <select class="form-control" name="pay_type" onchange="select_pay()" id="method">
@@ -204,7 +224,7 @@ if(!isset($_GET['id'])){
                                                     <option>Chq</option>
                                                 </select>
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <div class="col-md-3 slt-bank" style="display:none;">
                                             <div class="form-group">
@@ -241,12 +261,12 @@ if(!isset($_GET['id'])){
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <!-- <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>Pay Amount</label>
                                                 <input class="form-control" type="number" name="amount" autocomplete="off" min="0" required>
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <div class="col-md-3">
                                             <div class="form-group">
