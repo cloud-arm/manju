@@ -11,7 +11,7 @@
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Grafix | Invoice</title>
+    <title>Manju | Invoice</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
@@ -73,7 +73,7 @@
     $admin = $_SESSION['SESS_LAST_NAME'];
     $invo=$_GET['id'];
   
-    $result=select('purchases','*',"invoice_no='$invo' AND type='Order'");
+    $result=select('pd_purchase','*',"invoice_no='$invo'");// AND type='Order'
     if ($row = $result->fetch()) {
         $supplier=$row['supplier_name'];
         $supplier_invoice=$row['supplier_invoice'];
@@ -127,7 +127,7 @@
     $num = 0;
     
 
-        $result = select('purchases_list','*',"invoice_no='$invo'");
+        $result = select('pd_purchase_list','*',"invoice_no='$invo'");
         while ($row = $result->fetch()) {
             $num += 1; ?>
             <tr>

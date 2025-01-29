@@ -267,7 +267,7 @@ date_default_timezone_set("Asia/Colombo");
                     <td><?php  if($r0['approve']=='approve' && $r0['action']=='1'){
                                      echo '<span class="badge bg-blue">Approve by RM</span>'; 
                                      }elseif($r0['approve']=='approve' && $r0['action']=='2'){
-                                      echo '<span class="badge bg-blue">Approve by Sales Manager</span>'; 
+                                      echo '<span class="badge bg-blue">Approve by Sales Coordinator</span>'; 
                                      }elseif($r0['approve']=='approve' && $r0['action']=='3'){
                                       echo '<span class="badge bg-blue">Approve by Account</span>'; 
                                      }elseif($r0['approve']=='approve' && $r0['action']=='4'){
