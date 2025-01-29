@@ -18,12 +18,10 @@ if (!isset($_POST['table_name'])) {
         $columns = "*";
     }
     $where = $_POST['where'];
-    $master_key = $_POST['master_key'] ?? null;
-    $client_key = $_POST['client_key'] ?? null;
+    $master_key = $_POST['master_key'];
+    $client_key = $_POST['client_key'];
 
-    if ((empty($master_key) && $master_key !== "0") && (empty($client_key) && $client_key !== "0")) {
-        echo json_encode(array("message" => "Error: Unauthorized User!"));
-    }else{
+    if($master_key == 0 && $client_key == 0){
         try {
             $result = select($table_name,$columns,$where,'../');
             
@@ -37,6 +35,8 @@ if (!isset($_POST['table_name'])) {
         } catch (Exception $e) {
             echo json_encode(["message" => "Error: " . $e->getMessage()]);
         }
+    }else{
+        echo json_encode(array("message" => "Error: Unauthorized User!"));
     exit();
     }
 }
