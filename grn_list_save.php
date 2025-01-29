@@ -15,10 +15,10 @@ $id2 = $_POST['id2'];
 $pro = $_POST['pr'];
 $branch_id = 1;
 
-    $result = query("SELECT * FROM materials WHERE id='$pro' ");
+    $result = query("SELECT * FROM products WHERE id='$pro' ");
     for($i=0; $row = $result->fetch(); $i++){
-        $pro_name = $row['name']; 
-        $unit_price = $row['unit_price'];
+        $pro_name = $row['product_name']; 
+        $unit_price = $row['cost_price'];
     }
 
     $amount = $qty * $unit_price;

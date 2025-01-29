@@ -9,7 +9,6 @@ $r = $_SESSION['SESS_LAST_NAME'];
 $_SESSION['SESS_DEPARTMENT'] = 'management';
 $_SESSION['SESS_FORM'] = 'index';
 $user_level = $_SESSION['USER_LEWAL'];
-
 ?>
 
 <body class="hold-transition skin-yellow skin-orange sidebar-mini">
@@ -37,6 +36,18 @@ $user_level = $_SESSION['USER_LEWAL'];
             $date =  date("Y-m-d");
             ?>
 
+            <?php 
+                $user_id = $_SESSION['USER_EMPLOYEE_ID'];
+                $result = query("SELECT branch_id FROM employee WHERE id = '$user_id'");
+                for ($i = 0; $row = $result->fetch(); $i++) {
+                    $branch_id = $row["branch_id"];
+                }
+
+                $result1 = query("SELECT COUNT(*) AS total_visit FROM visit WHERE branch_id = '$branch_id'");
+                for ($i = 0; $row = $result1->fetch(); $i++) {
+                    $visit_count = $row["total_visit"];
+                }
+            ?>
 
             <div class="row">
                 <div class="col-sm-6 col-md-4 col-xs-12">
@@ -44,14 +55,11 @@ $user_level = $_SESSION['USER_LEWAL'];
                     <div class="info-box">
                         <span class="info-box-icon"><i class="fa fa-file-text"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">PURCHASE</span>
-                            <span class="info-box-number">0</span>
+                            <span class="info-box-text">Total Visit</span>
+                           <a href="visits.php"><span class="info-box-number"><?php echo $visit_count ?></span></a> 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
                             </div>
-                            <span class="progress-description">
-                                Total running jobs
-                            </span>
                         </div>
 
                     </div>
@@ -104,18 +112,45 @@ $user_level = $_SESSION['USER_LEWAL'];
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Job Number</th>
-                    <th>Company</th>
-                    <th>Location</th>
+                    <th>Employee Name</th>
+                    <th>Product Name</th>
+                    <th>IMI Number</th>
                     <th>Date</th>
-                    <th>Status</th>
-                    <th>Prograss</th>
-
+                    <th>Pay Type</th>
+                    <th>Amount</th>
                     <th>#</th>
-
                 </tr>
             </thead>
+
+            <tbody>
+            <?php 
+                $result = query("SELECT * FROM sales WHERE branch_id = '$branch_id' ORDER By id DESC");
+                for ($i = 0; $row = $result->fetch(); $i++) {
+                    $mpo_name = $row['emp_name'];
+                    $product_name = $row['product_name'];
+                    $imi_no = $row['imi_number'];
+                    $date = $row['date'];
+                    $pay_type = $row['pay_type'];
+                    $payment = $row['amount'];
+                    $project_number = $row['card_number'];
+            ?>
+                <tr>
+                <td><?php echo $i+1; ?></td>
+                <td><?php echo $mpo_name; ?></td>
+                <td><?php echo $product_name; ?></td>
+                <td><?php echo $imi_no; ?></td>
+                <td><?php echo $date; ?></td>
+                <td><?php echo $pay_type; ?></td>
+                <td><?php echo $payment; ?></td>
+                <td>
+                    <a class="btn btn-danger" href="progres.php?nic=<?php echo $row['nic']; ?>">
+                    <i class="fas fa-eye"></i>
+                    </a>
+                </td>
+                </tr>
+            <?php } ?>
             
+            </tbody>
         </table>
     </div>
 </div>

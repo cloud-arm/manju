@@ -44,21 +44,7 @@ include("head.php");
                                 <input type="text" class="form-control pull-right" id="reservation" name="dates" value="<?php echo isset($_GET['dates']) ? $_GET['dates'] : '';?>">
                             </div>
                         </div>
-                        <div class="col-lg-3">
-                            <label>Job Type:</label>
-                            <select name="type" id="type" class="form-control select2">
-                                <option value="all" <?= (!isset($_GET['type']) || $_GET['type'] == 'all') ? 'selected' : ''; ?>>All</option>
-                                <option value="corporate" <?= (isset($_GET['type']) && $_GET['type'] == 'corporate') ? 'selected' : ''; ?>>Corporate</option>
-                                <option value="retail" <?= (isset($_GET['type']) && $_GET['type'] == 'retail') ? 'selected' : ''; ?>>Retail</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-3">
-                            <label>Date Type:</label>
-                            <select name="type1" id="type1" class="form-control select2">
-                                <option value="job" <?= (!isset($_GET['type1']) || $_GET['type1'] == 'job') ? 'selected' : ''; ?>>Job Date</option>
-                                <option value="invoice" <?= (isset($_GET['type1']) && $_GET['type1'] == 'invoice') ? 'selected' : ''; ?>>Invoice Date</option>
-                            </select>
-                        </div>
+
                         <div class="col-lg-2">
                             <input type="submit" class="btn btn-info" value="Apply">
                         </div>
@@ -74,8 +60,7 @@ include("connect.php");
 date_default_timezone_set("Asia/Colombo");
 
 $dates = isset($_GET['dates']) ? $_GET['dates'] : '';
-$type = isset($_GET['type']) ? $_GET['type'] : 'all';
-$type1 = isset($_GET['type1']) ? $_GET['type1'] : 'job';
+
 
 
 // Default date range filter
@@ -88,13 +73,6 @@ if (!empty($dates)) {
     $d2 = date("Y-m-d", strtotime($end_date));
 }
 
-echo $type1;
-
-if ($type == 'all') {
-    $customer_type_condition = "customer_type IN ('corporate', 'retail')";
-} else {
-    $customer_type_condition = "customer_type = '$type'";
-}
 
 
 ?>
@@ -109,49 +87,44 @@ if ($type == 'all') {
             <thead>
     <tr>
         <th>Date</th>
-        <th>Invoice No</th>
-        <th>Pay Type</th>
-        <th>Job Number</th>
-        <th>Customer Name</th>
+        <th>Product name</th>
+        <th>Imi number</th>
+        <th>Pay type</th>
         <th>Amount</th>
-        <th>View</th>
+        <th>Down payment</th>
+        <th>Balance</th>
+        <th>Nic</th>
+        <th>Employee name</th>
+
     </tr>
 </thead>
 <tbody>
     <?php
 
-if ($type1 == 'job') {
-    $result = select('sales', '*', "job_date BETWEEN '$d1' AND '$d2' AND $customer_type_condition", '');
-} else {
-    $result = select('sales', '*', "date BETWEEN '$d1' AND '$d2' AND $customer_type_condition", '');
-}
+ 
+    $result = select('sales', '*', "date BETWEEN '$d1' AND '$d2'", '');
+
 
 
 
     while ($row = $result->fetch()) {
-        $job_no = $row['job_no'];
-        $r1 = select_item('job', 'all_job_no', "id = '$job_no'"); // Ensure this function returns a single value
         ?>
         <tr>
             <td><?php echo ($row['date']); ?></td>
-            <td><?php echo ($row['transaction_id']); ?></td>
+            <td><?php echo ($row['product_name']); ?></td>
+            <td><?php echo ($row['imi_number']); ?></td>
             <td><?php echo ($row['pay_type']); ?></td>
-            <td><?php echo ($r1); ?></td> <!-- Corrected to display the result -->
-            <td><?php echo ($row['customer_name']); ?></td>
             <td><?php echo ($row['amount']); ?></td>
-            <td>
-                <a href="save/print.php?id=<?php echo ($job_no); ?>" class="btn btn-primary btn-sm">
-                    <i class="fa fa-print"></i>
-                </a>
-                <?php if ($row['date'] == date('Y-m-d')) { ?>
-                    <a href="#" onclick="invo_dll(<?php echo ($row['transaction_id']); ?>)" class="btn btn-danger btn-sm">
-                        <i class="fa fa-trash"></i>
-                    </a>
-                    <form action="sales_dll.php" method="POST" id="did_<?php echo ($row['transaction_id']); ?>">
-                        <input type="hidden" name="id" value="<?php echo ($row['transaction_id']); ?>">
-                    </form>
-                <?php } ?>
-            </td>
+            <td><?php echo ($row['down_payment']); ?></td>
+            <td><?php echo ($row['balance']); ?></td>
+            <td><?php echo ($row['nic']); ?></td>
+            <td><?php echo ($row['emp_name']); ?></td>
+
+
+
+
+
+
         </tr>
     <?php } ?>
 </tbody>

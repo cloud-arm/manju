@@ -10,14 +10,19 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Retrieve the transaction ID from the POST data
 
 
-if (!isset($_POST['id'])) {
+if (!isset($_POST['user_id'])) {
     echo json_encode(array("message" => "Error: Missing parameters."));
     exit();
 }else{
-    $id = $_POST['id'];
+    $emp_id = $_POST['user_id'];
     try {
+        // get branch id
+        $result1 = query("SELECT branch_id FROM employee WHERE id='$emp_id'",'../');
+        for ($i = 0; $row = $result1->fetch(); $i++) {
+            $branch_id = $row['branch_id'];
+        }
         // Prepare and execute the SQL query
-        $result = query("SELECT product_code, product_name, price, qty, id FROM products WHERE id > '$id' ",'../');
+        $result = query("SELECT * FROM branch_stock WHERE branch_id = '$branch_id' ",'../');
     
         // Fetch the results and create an array
         $result_array = array();

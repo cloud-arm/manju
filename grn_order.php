@@ -8,6 +8,7 @@ $_SESSION['SESS_FORM'] = 'grn_order';
 include('connect.php');
 
 $u = $_SESSION['SESS_MEMBER_ID'];
+$emp_id = $_SESSION['USER_EMPLOYEE_ID'];
 $invo = $_GET['id'];
 $new='ORD'.date('YmdHis');
 if(!isset($_GET['id'])){
@@ -70,11 +71,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                                     onchange="pro_select()" style="width: 100%;" tabindex="1" autofocus>
                                                     <?php
                                                         // Fetch and display product options from the database
-                                                        $result = select_query("SELECT * FROM materials");
+                                                        $result = select_query("SELECT * FROM products");
                                                         while ($row = $result->fetch()) {
                                                             $mat_id = $raw['id'] ?>
                                                                         <option value="<?php echo $row['id']; ?>">
-                                                                            <?php echo $row['name']; ?>
+                                                                            <?php echo $row['product_name']; ?>
                                                                         </option>
                                                                         <?php } ?>
                                                 </select> 
@@ -121,9 +122,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 for ($i = 0; $row = $result->fetch(); $i++) {
                                     $pro_id = $row['product_id'];
 
-                                    $re = select_query("SELECT * FROM materials WHERE id = '$pro_id' ");
+                                    $re = select_query("SELECT * FROM products WHERE id = '$pro_id' ");
                                     for ($i = 0; $rw = $re->fetch(); $i++) {
-                                        $stock = $rw['available_qty'];
+                                        $stock = $rw['qty'];
                                     }
                                     if ($stock < 0) {
                                         $style = 'style="color:red" ';
@@ -171,6 +172,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                         <div class="col-md-4" style="height: 75px;display: flex; align-items: end;">
                                             <div class="form-group">
                                                 <input type="hidden" name="id" value="<?php echo $invo; ?>">
+                                                <input type="hidden" name="emp_id" value="<?php echo $emp_id; ?>">
                                                 <input type="hidden" name="type" value="Order">
                                                 <input class="btn btn-success" type="submit" value="Submit">
                                             </div>

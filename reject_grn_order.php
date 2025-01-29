@@ -12,8 +12,6 @@ for ($i = 0; $r01 = $result->fetch(); $i++) {
     $user_level = $r01['user_lewal'];  
 }
 
-echo 'user level is '. $user_level. 'and id '. $id;
-
 if($user_level == 1){
     $result = update(
         'purchases_list', 
@@ -53,6 +51,25 @@ echo $count;
         header("location:job_summery.php?id=$invo");
     }
 
+}elseif($user_level == 5){
+    $result = update(
+        'purchases_list', 
+        [
+            'action' => 'reject By Branch',
+            'approve' => '20',
+            'reject_note' => $note
+        ], 
+        'id='.$id, 
+        ''
+    );
+
+    $r1 = select_query("SELECT * FROM purchases_list WHERE id='$id'");
+    while ($row = $r1->fetch()) {
+        $invo = $row['invoice_no'];
+    }
+
+    header("location:job_summery.php?id=$invo");
+
 }else{
     $result = update(
         'purchases_list', 
@@ -86,7 +103,6 @@ echo $count;
             ], 
             "invoice_no='$invo'", 
             '');
-        echo $invo;
         header("location:job_summery.php?id=$invo");
     }else{
         header("location:job_summery.php?id=$invo");

@@ -187,7 +187,7 @@ $_SESSION['SESS_FORM'] = 'company';
                 </div>
             </div>
             <div class="tab-pane" id="settings">
-                <form method="post" action="edit_company.php" class="form-horizontal">
+                <form method="post" action="edit_branch.php" class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Name</label>
                         <div class="col-sm-10">
@@ -200,10 +200,23 @@ $_SESSION['SESS_FORM'] = 'company';
                             <input type="text" class="form-control" name="address" value="<?php echo $address; ?>" placeholder="Address">
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">E-mail</label>
+                        <label class="col-sm-2 control-label">District</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="email" value="<?php echo $email; ?>" placeholder="E-mail">
+                            <select class="form-control select2 hidden-search" name="district" id="c_id" style="width: 100%;">
+                            <?php
+                                                $result = query("SELECT * FROM district ");
+		                                        
+		                                        for($i=0; $row = $result->fetch(); $i++){
+	                                          ?>
+                                                <option value="<?php echo $row['id'];?>">
+                                                    <?php echo $row['district_name']; ?>
+                                                </option>
+                                                <?php
+				                                    }
+			                                        ?>
+                            </select>
                         </div>
                     </div>
                     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -350,13 +363,20 @@ $_SESSION['SESS_FORM'] = 'company';
 
     <!-- DataTables -->
     <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+    <!-- Select2 -->
+    <script src="../../plugins/select2/select2.full.min.js"></script>
     <script src="../../plugins/datatables/dataTables.bootstrap.min.js"></script>
     <!-- SlimScroll -->
     <script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
     <!-- FastClick -->
     <script src="../../plugins/fastclick/fastclick.js"></script>
         <script>
-function click_open(type, id = null) {
+    $(function() {
+        //Initialize Select2 Elements
+        $(".select2").select2();
+    });
+
+    function click_open(type, id = null) {
     // Hide all popups initially
     document.querySelectorAll('.container-up').forEach(function(popup) {
         popup.classList.add('d-none');
