@@ -82,7 +82,7 @@ date_default_timezone_set("Asia/Colombo");
                                     <form action="" method="GET">
                                         <div class="row" style="margin-bottom: 20px; display: flex; align-items: end;">
                                             <div class="col-lg-1"></div>
-                                            <div class="col-lg-5">
+                                            <div class="col-lg-8">
                                                 <label>Date range:</label>
                                                 <div class="input-group">
                                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
