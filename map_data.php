@@ -3,9 +3,7 @@ include('connect.php');
 date_default_timezone_set("Asia/Colombo");
 
 // Fetch GPS data from the 'gps_data' table
-$gpsDataFromTable = array(
-    array('lat' => 6.826268, 'lng' => 79.912433, 'name' => 'Thimal', 'icon' => '', 'date' => '', 'time' => '')
-);
+$gpsDataFromTable = array();
 
 // Fetch GPS data from the 'user' table
 $date=date('Y-m-d');
