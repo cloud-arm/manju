@@ -69,11 +69,11 @@ include("connect.php");
   <!-- Page script -->
   <script>
     // Initialize Leaflet map with Sri Lanka coordinates and an appropriate zoom level
-    var map = L.map('map').setView([6.892559, 79.932053], 12); // Centered on Sri Lanka, zoom level 7
+    var map = L.map('map').setView([6.892559, 79.932053], 8); // Centered on Sri Lanka, zoom level 7
 
     // Define bounds for cropping the map (example bounds)
-    var southWest = L.latLng(7.157403, 79.569577); // Bottom-left corner of Sri Lanka
-    var northEast = L.latLng(6.572458, 80.404066); // Top-right corner of Sri Lanka
+    var southWest = L.latLng(10.146806, 78.059410); // Bottom-left corner of Sri Lanka
+    var northEast = L.latLng(5.161196,  83.570729); // Top-right corner of Sri Lanka
     var bounds = L.latLngBounds(southWest, northEast);
 
     // Add OpenStreetMap tile layer
