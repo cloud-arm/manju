@@ -7,6 +7,7 @@ $r = $_SESSION['SESS_LAST_NAME'];
 $_SESSION['SESS_DEPARTMENT'] = 'management';
 
 $_SESSION['SESS_FORM'] = 'store_manage.php';
+$user_level = $_SESSION['USER_LEWAL'];
 date_default_timezone_set("Asia/Colombo");
 ?>
 
@@ -45,11 +46,15 @@ date_default_timezone_set("Asia/Colombo");
                             $branch_id = $row["branch_id"];
                         }
 
-                        $salesResult = select('visit', 'COUNT(id) AS total1', "branch_id = '$branch_id'");
-                        if ($salesResult) {
-                            $salesRow = $salesResult->fetch();
-                            if ($salesRow) {
-                                $totalCount += $salesRow['total1']; // Accumulate the count
+                        if($branch_id > 0){
+                            $result1 = query("SELECT COUNT(*) AS total_visit FROM visit WHERE branch_id = '$branch_id'");
+                            for ($i = 0; $row = $result1->fetch(); $i++) {
+                                $totalCount = $row["total_visit"];
+                            }
+                        }elseif($branch_id == 0 && $user_level == 20){
+                            $result2 = query("SELECT COUNT(*) AS total_visit FROM visit");
+                            for ($i = 0; $row = $result2->fetch(); $i++) {
+                                $totalCount = $row["total_visit"];
                             }
                         }
                     
@@ -145,8 +150,11 @@ date_default_timezone_set("Asia/Colombo");
               $pay_total = 0;
               $bill_total = 0;
              
-
+            if($branch_id > 0){
+                $re = select_query("SELECT * FROM `visit` WHERE date BETWEEN '$d1' AND '$d2' AND branch_id = '$branch_id'");
+            }elseif($branch_id == 0 && $user_level == 20){
                 $re = select_query("SELECT * FROM `visit` WHERE date BETWEEN '$d1' AND '$d2'");
+            }
                 for ($i = 0; $r0 = $re->fetch(); $i++) {
                  
               ?>
