@@ -30,6 +30,8 @@ foreach ($visit_list as $list) {
     $date = $list['date'];
     $time = $list['time'];
     $product_id = $list['product_id'];
+    $lat = $list['lat'];
+    $lon = $list['lon'];
 
     $app_id = $list['id'];
 
@@ -55,9 +57,9 @@ foreach ($visit_list as $list) {
 
             if ($con == 0) {
                 // insert query
-                $sql = "INSERT INTO visit (emp_id,name,address,phone,nic,tds_value,schedule_date,positive,date,time,product_id,app_id,sync_date,sync_time,branch_id,employee) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO visit (emp_id,name,address,phone,nic,tds_value,schedule_date,positive,date,time,product_id,app_id,sync_date,sync_time,branch_id,employee,lat,lon) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($emp_id, $name, $address, $phone, $nic, $tds_value, $schedule_date, $positive, $date, $time, $product_id, $app_id, $sync_date, $sync_time, $branch_id, $emp_name));
+                $ql->execute(array($emp_id, $name, $address, $phone, $nic, $tds_value, $schedule_date, $positive, $date, $time, $product_id, $app_id, $sync_date, $sync_time, $branch_id, $emp_name,$lat,$lon));
             }
 
             // get sales list id
