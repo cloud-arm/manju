@@ -43,10 +43,18 @@ $user_level = $_SESSION['USER_LEWAL'];
                     $branch_id = $row["branch_id"];
                 }
 
-                $result1 = query("SELECT COUNT(*) AS total_visit FROM visit WHERE branch_id = '$branch_id'");
-                for ($i = 0; $row = $result1->fetch(); $i++) {
-                    $visit_count = $row["total_visit"];
+                if($branch_id > 0){
+                    $result1 = query("SELECT COUNT(*) AS total_visit FROM visit WHERE branch_id = '$branch_id'");
+                    for ($i = 0; $row = $result1->fetch(); $i++) {
+                        $visit_count = $row["total_visit"];
+                    }
+                }elseif($branch_id == 0 && $user_level == 20){
+                    $result2 = query("SELECT COUNT(*) AS total_visit FROM visit");
+                    for ($i = 0; $row = $result2->fetch(); $i++) {
+                        $visit_count = $row["total_visit"];
+                    }
                 }
+                
             ?>
 
             <div class="row">
