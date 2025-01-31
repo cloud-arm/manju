@@ -1,11 +1,13 @@
 <?php
 session_start();
 include('connect.php');
+include('config.php');
 date_default_timezone_set("Asia/Colombo");
 
 $name = $_POST['name'];
 $nickname = $_POST['nickname'];
 $phone_no = $_POST['phone_no'];
+$o_phone_no = $_POST['office_phone_no'];
 $address = $_POST['address'];
 $nic = $_POST['nic'];
 $etf_no = $_POST['epf_no'];
@@ -30,10 +32,8 @@ if ($nickname == '') {
 }
 
  
-    $user_name = $_POST['username'];
-    $password = $_POST['password'];
-
-    $user_name = $nickname;
+$user_name = $_POST['username'];
+$password = $_POST['password'];
 
 
 $user_name = strtolower($user_name);
@@ -41,9 +41,7 @@ $user_name = strtolower($user_name);
 $attend_date = date('Y-m-d');
 $type = '1';
 
-$result = $db->prepare("SELECT * FROM employees_des WHERE id=:id ");
-$result->bindParam(':id', $des_id);
-$result->execute();
+$result = query("SELECT * FROM employees_des WHERE id='$des_id' ");
 for ($i = 0; $row = $result->fetch(); $i++) {
     $des_id = $row['id'];
     $des = $row['name'];
@@ -151,13 +149,13 @@ if ($id == 0) {
     echo $finalPosition;
 
     // Insert into employee table
-    $sql = "INSERT INTO employee (name, type, phone_no, nic, address, attend_date, hour_rate, des, des_id, epf_no, epf_amount, ot, well, action, username, password, pic, position) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO employee (name, type, personal_phone_no, office_phone_no, nic, address, attend_date, hour_rate, des, des_id, epf_no, epf_amount, ot, well, action, username, password, pic, position, nick_name) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $q = $db->prepare($sql);
-    $q->execute(array($name, $type, $phone_no, $nic, $address, $attend_date, $rate, $des, $des_id, $etf_no, $etf_amount, $ot, $well, 1, $user_name, $password, $imageUploadPath, $finalPosition));
+    $q->execute(array($name, $type, $phone_no, $o_phone_no, $nic, $address, $attend_date, $rate, $des, $des_id, $etf_no, $etf_amount, $ot, $well, 1, $user_name, $password, $imageUploadPath, $finalPosition, $nickname));
 
     // Get the last inserted employee id and position
-    $result = $db->prepare("SELECT * FROM employee ORDER BY id DESC LIMIT 1");
+    $result = query("SELECT * FROM employee ORDER BY id DESC LIMIT 1");
     $result->execute();
     $row = $result->fetch();
     //$position = $row['position']; 
@@ -167,10 +165,10 @@ if ($id == 0) {
 
   
         // Insert into user table
-        $sql = 'INSERT INTO user (username, password, name, position, employee_id, upic) 
-                VALUES (?, ?, ?, ?, ?, ?)';
+        $sql = 'INSERT INTO user (username, password, name, position, employee_id, upic, user_lewal) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)';
         $q = $db->prepare($sql);
-        $q->execute(array($user_name, $password, $name, $finalPosition, $employee_id, $imageUploadPath));
+        $q->execute(array($user_name, $password, $nickname, $finalPosition, $employee_id, $imageUploadPath, $des_id));
     
 }
     else {

@@ -130,25 +130,19 @@ include("connect.php");
 
         <div class="row">
           <?php
-          $result = $db->prepare("SELECT  * FROM employee ORDER BY des_id  ");
-          $result->bindParam(':id', $date);
-          $result->execute();
+          $result = query("SELECT  * FROM employee ORDER BY des_id  ");
           for ($i = 0; $row = $result->fetch(); $i++) {
             $cl1 = 'bg-gray';
             $id = $row['id'];
 
             $count = 0;
-            $res = $db->prepare("SELECT COUNT(*) FROM attendance WHERE emp_id=:id AND date BETWEEN '$d1' AND '$d2' ");
-            $res->bindParam(':id', $id);
-            $res->execute();
+            $res = query("SELECT COUNT(*) FROM attendance WHERE emp_id='$id' AND date BETWEEN '$d1' AND '$d2' ");
             for ($i = 0; $ro = $res->fetch(); $i++) {
               $count = $ro['COUNT(*)'];
             }
             $pra = $count / 30 * 100;
 
-            $res = $db->prepare("SELECT  * FROM attendance WHERE emp_id=:id AND date = '$date' ");
-            $res->bindParam(':id', $id);
-            $res->execute();
+            $res = query("SELECT  * FROM attendance WHERE emp_id='$id' AND date = '$date' ");
             for ($i = 0; $ro = $res->fetch(); $i++) {
               $cl1 = 'bg-teal';
               if ($row['des_id'] == 1) {

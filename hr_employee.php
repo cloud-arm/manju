@@ -4,6 +4,20 @@
 include("head.php");
 ?>
 
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script>
+        function click_open(i) {
+            $("#popup_" + i).removeClass("d-none");
+            $("#container_up").removeClass("d-none");
+        }
+
+        function click_close() {
+            $(".popup").addClass("d-none");
+            $("#container_up").addClass("d-none");
+        }
+    </script>
+
 <body class="hold-transition skin-yellow sidebar-mini">
     <div class="wrapper" style="overflow-y: hidden;">
         <?php
@@ -41,7 +55,8 @@ include("head.php");
                         $data = [
                             "ID" => 'id',
                             "Name" => 'name',
-                            "Phone_NO" => 'phone_no',
+                            "Phone_NO" => 'personal_phone_no',
+                            "Office_Phone_NO" => 'office_phone_no',
                             "NIC" => "nic",
                             "EPF" => "epf_amount@font_txt@Rs",
                             "EPF_No" => "epf_no",
@@ -97,8 +112,15 @@ include("head.php");
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Phone No</label>
+                                            <label>Personal Phone No</label>
                                             <input class="form-control" type="text" name="phone_no">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Office Phone No</label>
+                                            <input class="form-control" type="text" name="office_phone_no">
                                         </div>
                                     </div>
 
@@ -128,9 +150,7 @@ include("head.php");
                                             <label>Designation</label>
                                             <select class="form-control select2" style="width: 100%;" onchange="des_select(this.options[this.selectedIndex].getAttribute('value'))" name="des">
                                                 <?php
-                                                $result = $db->prepare("SELECT * FROM employees_des ");
-                                                $result->bindParam(':userid', $res);
-                                                $result->execute();
+                                                $result = query("SELECT * FROM employees_des ");
                                                 for ($i = 0; $row = $result->fetch(); $i++) {
                                                 ?>
                                                     <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
@@ -218,8 +238,7 @@ include("head.php");
         <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
-    <!-- jQuery 2.2.3 -->
-    <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+    
     <!-- Bootstrap 3.3.6 -->
     <script src="../../bootstrap/js/bootstrap.min.js"></script>
     <!-- DataTables -->
@@ -246,18 +265,6 @@ include("head.php");
     <script src="https://dev.colorbiz.org/ashen/cdn/main/dist/js/DarkTheme.js"></script>
 
     <!-- page script -->
-
-    <script>
-        function click_open(i) {
-            $("#popup_" + i).removeClass("d-none");
-            $("#container_up").removeClass("d-none");
-        }
-
-        function click_close() {
-            $(".popup").addClass("d-none");
-            $("#container_up").addClass("d-none");
-        }
-    </script>
 
     <script>
         function previewImage(event) {
