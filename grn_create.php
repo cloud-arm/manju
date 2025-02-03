@@ -25,7 +25,7 @@ while ($row = $r1->fetch()) {
     $branch_id = $row['branch_id'];
 }
 
-$r2 = select_query("SELECT * FROM branch_stock WHERE product_id='$product_id' ");
+$r2 = select_query("SELECT * FROM branch_stock WHERE product_id='$product_id' AND branch_id = '$branch_id' ");
 if ($r2 && $r2->rowCount() > 0) {
     // Records found
     $result = update(
@@ -33,7 +33,7 @@ if ($r2 && $r2->rowCount() > 0) {
         [
             'qty'=> $qty
         ],
-        "product_id = '$product_id'",
+        "product_id = '$product_id' AND branch_id = '$branch_id'",
         ''
     );
 } else {

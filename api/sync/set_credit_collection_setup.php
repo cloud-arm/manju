@@ -27,6 +27,8 @@ foreach ($recovery_list as $list) {
     $default_balance = $list['default_balance'];
     $project_number = $list['project_number'];
     $status = $list['status'];
+    $pay_balance = $list['pay_balance'];
+    $last_term_date = $list['last_term_date'];
 
     $app_id = $list['id'];
    
@@ -48,9 +50,9 @@ foreach ($recovery_list as $list) {
             if ($con != 0) {
 
                 // update query
-                $sql = "UPDATE credit SET total_pay_amount = ?, last_pay_date = ?, credit_balance = ?, last_pay_amount = ?, available_installments = ?, status = ?, default_value = ?, default_balance = ? WHERE project_number = ?";
+                $sql = "UPDATE credit SET total_pay_amount = ?, last_pay_date = ?, credit_balance = ?, last_pay_amount = ?, available_installments = ?, status = ?, default_value = ?, default_balance = ?, last_term_date = ?, pay_balance = ? WHERE project_number = ?";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($total_pay_amount, $last_pay_date, $credit_balance, $last_pay_amount, $available_installments, $status, $default_amount, $default_balance, $project_number));
+                $ql->execute(array($total_pay_amount, $last_pay_date, $credit_balance, $last_pay_amount, $available_installments, $status, $default_amount, $default_balance, $last_term_date, $pay_balance, $project_number));
             }
 
             // get credit list id

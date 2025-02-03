@@ -27,7 +27,7 @@ foreach ($recovery_list as $list) {
     $schedule_date = $list['schedule_date'];
     $project_number = $list['project_number'];
     $recovery_officer_id = $list['recovery_officer_id'];
-
+    $last_term_date = $list['last_term_date'];
     $app_id = $list['id'];
    
     $sync_date = date('Y-m-d');
@@ -48,9 +48,9 @@ foreach ($recovery_list as $list) {
             if ($con == 0) {
 
                 // update query
-                $sql = "UPDATE credit SET tds_value = ?, no_of_installments = ?, available_installments = ?, installments_amount = ?, positive = ?, status = ?, schedule_date = ?, app_id = ? WHERE project_number = ?";
+                $sql = "UPDATE credit SET tds_value = ?, no_of_installments = ?, available_installments = ?, installments_amount = ?, positive = ?, status = ?, schedule_date = ?, app_id = ?, last_term_date = ? WHERE project_number = ?";
                 $ql = $db->prepare($sql);
-                $ql->execute(array($tds_value, $no_of_installments, $available_installments, $installments_amount, $positive, $status, $schedule_date, $app_id, $project_number));
+                $ql->execute(array($tds_value, $no_of_installments, $available_installments, $installments_amount, $positive, $status, $schedule_date, $app_id, $last_term_date, $project_number));
             }
 
             // get credit list id
